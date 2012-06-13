@@ -38,7 +38,7 @@ public class DroolsJbpmIntegrationExamplesApp extends JFrame {
     }
 
     public DroolsJbpmIntegrationExamplesApp() {
-        super("Drools and jBPM integration examples");
+        super("JBoss BRMS examples");
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
