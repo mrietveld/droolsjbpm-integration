@@ -126,11 +126,6 @@
       <artifactId>drools-docs</artifactId>
       <type>jdocbook</type>
     </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-docs</artifactId>
-      <type>jdocbook</type>
-    </dependency>
   </dependencies>
 
 </project>
