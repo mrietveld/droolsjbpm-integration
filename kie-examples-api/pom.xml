@@ -14,9 +14,9 @@
   <name>Kie API examples</name>
 
   <packaging>pom</packaging>
-  <modules>
+<!--  <modules>
     <module>kie-maven-example</module>
-  </modules>
+  </modules>-->
 
 
 </project>
