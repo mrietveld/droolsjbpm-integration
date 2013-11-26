@@ -19,6 +19,7 @@ import org.kie.services.client.serialization.jaxb.impl.JaxbCommandsResponse;
 import org.kie.services.client.serialization.jaxb.impl.JaxbOtherResponse;
 import org.kie.services.client.serialization.jaxb.impl.JaxbVariablesResponse;
 import org.kie.services.client.serialization.jaxb.impl.audit.JaxbHistoryLogList;
+import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentJobResult;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessInstanceListResponse;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessInstanceResponse;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessInstanceWithVariablesResponse;
@@ -35,7 +36,8 @@ public class JaxbSerializationProvider implements SerializationProvider {
             JaxbCommandsResponse.class,
         // REST other
             JaxbGenericResponse.class,
-            JaxbProcessInstanceWithVariablesResponse.class
+            JaxbProcessInstanceWithVariablesResponse.class,
+            JaxbDeploymentJobResult.class
     };
 
     private Set<Class<?>> jaxbClasses = new HashSet<Class<?>>(Arrays.asList(kieJaxbClasses));

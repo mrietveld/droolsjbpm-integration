@@ -16,6 +16,8 @@ import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.kie.services.api.DeploymentUnit.RuntimeStrategy;
+import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.correlation.CorrelationPropertyInfo;
 import org.jbpm.process.audit.NodeInstanceLog;
@@ -55,6 +57,9 @@ import org.kie.services.client.serialization.jaxb.impl.audit.JaxbHistoryLogList;
 import org.kie.services.client.serialization.jaxb.impl.audit.JaxbNodeInstanceLog;
 import org.kie.services.client.serialization.jaxb.impl.audit.JaxbProcessInstanceLog;
 import org.kie.services.client.serialization.jaxb.impl.audit.JaxbVariableInstanceLog;
+import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentJobResult;
+import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentUnit;
+import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentUnit.JaxbRuntimeStrategy;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessInstanceListResponse;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessInstanceResponse;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessInstanceWithVariablesResponse;
@@ -369,5 +374,24 @@ public abstract class SerializationTest {
         NodeInstanceLog nodeLog = new NodeInstanceLog();
         JaxbNodeInstanceLog jaxbNodeLog = new JaxbNodeInstanceLog(nodeLog);
         testRoundtrip(jaxbNodeLog);
+    }
+    
+    @Test
+    public void submitJobResultTest() throws Exception {
+        JaxbDeploymentJobResult jaxbJob = new JaxbDeploymentJobResult();
+        testRoundtrip(jaxbJob);
+
+        KModuleDeploymentUnit kDepUnit = new KModuleDeploymentUnit("org", "jar", "1.0");
+        kDepUnit.setStrategy(RuntimeStrategy.PER_PROCESS_INSTANCE);
+        
+        JaxbDeploymentUnit depUnit = new JaxbDeploymentUnit();
+        depUnit.setGroupId(kDepUnit.getGroupId());
+        depUnit.setGroupId(kDepUnit.getArtifactId());
+        depUnit.setGroupId(kDepUnit.getVersion());
+        depUnit.setGroupId(kDepUnit.getKbaseName());
+        depUnit.setGroupId(kDepUnit.getKsessionName());
+        depUnit.setStrategy(JaxbRuntimeStrategy.valueOf(kDepUnit.getStrategy().toString()));
+        jaxbJob = new JaxbDeploymentJobResult("test", false, depUnit, "deploy");
+        testRoundtrip(jaxbJob);
     }
 }
