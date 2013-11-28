@@ -1,10 +1,6 @@
 package org.kie.services.remote.rest.async;
 
-import static org.kie.services.remote.rest.DeploymentResource.convertKModuleDepUnitToJaxbDepUnit;
-
-import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -12,22 +8,18 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.jboss.resteasy.logging.Logger;
-import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentJobResult;
 import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentUnit.JaxbDeploymentStatus;
 import org.kie.services.remote.exception.KieRemoteServicesInternalError;
+
+import static org.kie.services.remote.rest.DeploymentResource.*;
 
 /**
  * A lot of the ideas in this class have been taken from the <code>org.jboss.resteasy.coreAsynchronousDispatcher</code> class.
@@ -104,7 +96,7 @@ public class AsyncDeploymentJobExecutor {
         }
 
         // submit job
-        DeploymentJobCallable job = new DeploymentJobCallable(depUnit, type, beanManager);
+        DeploymentJobCallable job = new DeploymentJobCallable(depUnit, type, deploymentService);
         Future<Boolean> newJob = executor.submit(job);
         previousJob = jobs.put(jobId, newJob);
 
@@ -182,33 +174,26 @@ public class AsyncDeploymentJobExecutor {
 
         private final KModuleDeploymentUnit deploymentUnit;
         private final JobType type;
-        private final BeanManager beanManager;
+        private final KModuleDeploymentService deploymentService;
 
-        public DeploymentJobCallable(KModuleDeploymentUnit depUnit, JobType type, BeanManager beanManager) {
+        public DeploymentJobCallable(KModuleDeploymentUnit depUnit, JobType type, KModuleDeploymentService deploymentService) {
             this.deploymentUnit = depUnit;
             this.type = type;
-            this.beanManager = beanManager;
+            this.deploymentService = deploymentService;
         }
 
         @Override
         public Boolean call() throws Exception {
-            logger.warn("CALL A");
-            TransactionalDeploymentService deploymentService = lookupDeploymentService();
-            logger.warn("CALL B");
-
             boolean success = false;
             switch (type) {
             case DEPLOY:
                 try {
-                    logger.warn("CALL C");
                     deploymentService.deploy(deploymentUnit);
                     logger.debug("Deployment unit '" + deploymentUnit.getIdentifier() + "' deployed.");
                     success = true;
-                    logger.warn("CALL D");
                 } catch (Exception e) {
                     logger.error("Unable to deploy '" + deploymentUnit.getIdentifier() + "'", e);
                     success = false;
-                    logger.warn("CALL E");
                 }
                 break;
             case UNDEPLOY:
@@ -226,36 +211,7 @@ public class AsyncDeploymentJobExecutor {
                         + "), not taking any action.");
             }
 
-            logger.warn("CALL F");
             return success;
-        }
-
-        @SuppressWarnings("unchecked")
-        private TransactionalDeploymentService lookupDeploymentService() { 
-            logger.warn("lookup A");
-            Class<TransactionalDeploymentService> depServiceclass = TransactionalDeploymentService.class;
-            try {
-                logger.warn("lookup B");
-                final Iterator<Bean<?>> iter = beanManager.getBeans(depServiceclass).iterator();
-                logger.warn("lookup C");
-                if (!iter.hasNext()) {
-                    throw new IllegalStateException("CDI BeanManager cannot find an instance of requested type " + depServiceclass.getName());
-                }
-                logger.warn("lookup D");
-                final Bean<TransactionalDeploymentService> bean = (Bean<TransactionalDeploymentService>) iter.next();
-                logger.warn("lookup E: " + bean);
-                final CreationalContext<TransactionalDeploymentService> ctx = beanManager.createCreationalContext(bean);
-                logger.warn("lookup F");
-                TransactionalDeploymentService depServiceBean 
-                = (TransactionalDeploymentService) beanManager.getReference(bean, depServiceclass, ctx);
-                logger.warn("lookup G");
-                return depServiceBean;
-            } catch (Exception e) {
-                logger.warn("lookup G");
-                logger.warn("Unable to lookup " + depServiceclass.getClass());
-                return null;
-            }
-
         }
     }
 
