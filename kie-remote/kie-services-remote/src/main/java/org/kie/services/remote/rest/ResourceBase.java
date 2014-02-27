@@ -6,27 +6,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Variant;
 
+import org.jboss.resteasy.core.request.ServerDrivenNegotiation;
+import org.jboss.resteasy.spi.BadRequestException;
+import org.jboss.resteasy.spi.NotAcceptableException;
+import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.kie.api.command.Command;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
@@ -34,9 +35,6 @@ import org.kie.internal.task.api.model.InternalTask;
 import org.kie.services.client.api.command.AcceptedCommands;
 import org.kie.services.client.serialization.jaxb.impl.JaxbCommandsRequest;
 import org.kie.services.client.serialization.jaxb.impl.JaxbCommandsResponse;
-import org.kie.services.client.serialization.jaxb.rest.JaxbRequestStatus;
-import org.kie.services.remote.rest.exception.RestOperationException;
-import org.kie.services.remote.rest.variant.ServerDrivenNegotiation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,18 +53,11 @@ public class ResourceBase {
 
         if (commands != null) {
             int cmdListSize = commands.size(); 
-           
-            // First check to make sure that all commands will be processed
             for (int i = 0; i < cmdListSize; ++i) {
                 Command<?> cmd = commands.get(i);
                 if (!AcceptedCommands.getSet().contains(cmd.getClass())) {
-                    throw RestOperationException.forbidden("The execute REST operation does not accept " + cmd.getClass().getName() + " instances.");
+                    throw new NotAcceptableException("The execute REST operation does not accept " + cmd.getClass().getName() + " instances.");
                 }
-            }
-           
-            // Execute commands
-            for (int i = 0; i < cmdListSize; ++i) {
-                Command<?> cmd = commands.get(i);
                 logger.debug("Processing command " + cmd.getClass().getSimpleName());
                 Object cmdResult = null;
                 try { 
@@ -80,7 +71,7 @@ public class ResourceBase {
                                     request.getProcessInstanceId(),
                                     errorMsg);
                         } else { 
-                            cmdResult = requestBean.doNonDeploymentTaskOperationAndSerializeResult(taskCmd, errorMsg);
+                            cmdResult = requestBean.doTaskOperationAndSerializeResult(taskCmd, errorMsg);
                         }
                     } else {
                         cmdResult = requestBean.doKieSessionOperation(
@@ -89,20 +80,19 @@ public class ResourceBase {
                                 request.getProcessInstanceId(),
                                 errorMsg);
                     }
-                } catch(PermissionDeniedException pde) { 
-                    jaxbResponse.addException(pde, i, cmd, JaxbRequestStatus.PERMISSIONS_CONFLICT);
-                    logger.warn("Unable to execute " + cmd.getClass().getSimpleName() + "/" + i, pde);
                 } catch(Exception e) { 
-                    jaxbResponse.addException(e, i, cmd, JaxbRequestStatus.FAILURE);
-                    logger.warn("Unable to execute " + cmd.getClass().getSimpleName() + "/" + i, e);
+                    jaxbResponse.addException(e, i, cmd);
+                    logger.warn("Unable to execute " + cmd.getClass().getSimpleName() + "/" + i
+                            + " because of " + e.getClass().getSimpleName() + ": " + e.getMessage(), e);
                 }
                 if (cmdResult != null) {
                     try {
                         // addResult could possibly throw an exception, which is why it's here and not above
                         jaxbResponse.addResult(cmdResult, i, cmd);
                     } catch (Exception e) {
-                        logger.error("Unable to add result from " + cmd.getClass().getSimpleName() + "/" + i, e); 
-                        jaxbResponse.addException(e, i, cmd, JaxbRequestStatus.FAILURE);
+                        logger.error("Unable to add result from " + cmd.getClass().getSimpleName() + "/" + i 
+                                + " because of " + e.getClass().getSimpleName(), e);
+                        jaxbResponse.addException(e, i, cmd);
                     }
                 }
             }
@@ -121,18 +111,12 @@ public class ResourceBase {
         = Variant.mediaTypes(MediaType.APPLICATION_XML_TYPE, MediaType.APPLICATION_JSON_TYPE).build();
     private static Variant defaultVariant 
         = Variant.mediaTypes(MediaType.APPLICATION_XML_TYPE).build().get(0);
-   
-    private static final String ACCEPT = "Accept";
-    private static final String ACCEPT_CHARSET = "Accept-Charset";
-    private static final String ACCEPT_ENCODING = "Accept-Encoding";
-    private static final String ACCEPT_LANGUAGE = "Accept-Language";
     
     public static Variant getVariant(HttpHeaders headers) { 
         // copied (except for the acceptHeaders fix) from RestEasy's RequestImpl class
         ServerDrivenNegotiation negotiation = new ServerDrivenNegotiation();
         MultivaluedMap<String, String> requestHeaders = headers.getRequestHeaders();
-        List<String> acceptHeaders = requestHeaders.get(ACCEPT);
-        // Fix
+        List<String> acceptHeaders = requestHeaders.get(HttpHeaderNames.ACCEPT);
         if( acceptHeaders != null && ! acceptHeaders.isEmpty() ) { 
             List<String> fixedAcceptHeaders = new ArrayList<String>();
             for(String header : acceptHeaders ) { 
@@ -141,32 +125,31 @@ public class ResourceBase {
             acceptHeaders = fixedAcceptHeaders;
         }
         negotiation.setAcceptHeaders(acceptHeaders);
-        negotiation.setAcceptCharsetHeaders(requestHeaders.get(ACCEPT_CHARSET));
-        negotiation.setAcceptEncodingHeaders(requestHeaders.get(ACCEPT_ENCODING));
-        negotiation.setAcceptLanguageHeaders(requestHeaders.get(ACCEPT_LANGUAGE));
+        negotiation.setAcceptCharsetHeaders(requestHeaders.get(HttpHeaderNames.ACCEPT_CHARSET));
+        negotiation.setAcceptEncodingHeaders(requestHeaders.get(HttpHeaderNames.ACCEPT_ENCODING));
+        negotiation.setAcceptLanguageHeaders(requestHeaders.get(HttpHeaderNames.ACCEPT_LANGUAGE));
 
         return negotiation.getBestMatch(variants);
         // ** use below instead of above when RESTEASY-960 is fixed **
         // return restRequest.selectVariant(variants); 
     }
     
-    
     protected static Response createCorrectVariant(Object responseObj, HttpHeaders headers) { 
-        return createCorrectVariant(responseObj, headers, null);
+        Variant v = getVariant(headers);
+        if( v != null ) { 
+            return Response.ok(responseObj, v).build();
+        } else {
+            return Response.ok(responseObj, defaultVariant).build();
+        } 
     }
     
     protected static Response createCorrectVariant(Object responseObj, HttpHeaders headers, javax.ws.rs.core.Response.Status status) { 
-        ResponseBuilder responseBuilder = null;
         Variant v = getVariant(headers);
-        if( v == null ) { 
-            v = defaultVariant;
-        }
-        if( status != null ) { 
-            responseBuilder = Response.status(status).entity(responseObj).variant(v);
-        } else { 
-            responseBuilder = Response.ok(responseObj, v);
-        }
-        return responseBuilder.build();
+        if( v != null ) { 
+            return Response.status(status).entity(responseObj).variant(v).build();
+        } else {
+            return Response.ok(responseObj, defaultVariant).build();
+        } 
     }
     
 
@@ -189,7 +172,7 @@ public class ResourceBase {
             return null;
         }
         if (paramValues.size() != 1) {
-            throw RestOperationException.badRequest("One and only one '" + paramName + "' query parameter required for '" + operation
+            throw new BadRequestException("One and only one '" + paramName + "' query parameter required for '" + operation
                     + "' operation (" + paramValues.size() + " passed).");
         }
         return paramValues.get(0);
@@ -205,7 +188,7 @@ public class ResourceBase {
         }
         if (paramValues == null) {
             if (required) {
-                throw RestOperationException.badRequest("Query parameter '" + paramName + "' required for '" + operation
+                throw new BadRequestException("Query parameter '" + paramName + "' required for '" + operation
                         + "' operation.");
             }
             return new ArrayList<String>();
@@ -266,19 +249,19 @@ public class ResourceBase {
         if (paramVal.matches("^\\d+[li]?$")) {
             if (paramVal.matches(".*i$")) {
                 if (mustBeLong) {
-                    throw RestOperationException.badRequest( paramName 
+                    throw new BadRequestException( paramName 
                             + " parameter is numerical but contains the \"Integer\" suffix 'i' and must have no suffix or \"Long\" suffix 'l' ("
                             + paramVal + ")");
                 }
                 paramVal = paramVal.substring(0, paramVal.length() - 1);
                 if (paramVal.length() > 9) {
-                    throw RestOperationException.badRequest(paramName + " parameter is numerical but too large to be an integer ("
+                    throw new BadRequestException(paramName + " parameter is numerical but too large to be an integer ("
                             + paramVal + "i)");
                 }
                 return Integer.parseInt(paramVal);
             } else {
                 if (paramVal.length() > 18) {
-                    throw RestOperationException.badRequest(paramName + " parameter is numerical but too large to be a long ("
+                    throw new BadRequestException(paramName + " parameter is numerical but too large to be a long ("
                             + paramVal + ")");
                 }
                 if (paramVal.matches(".*l$")) {
@@ -287,7 +270,7 @@ public class ResourceBase {
                 return Long.parseLong(paramVal);
             }
         }
-        throw RestOperationException.badRequest(paramName + " parameter does not have a numerical format (" + paramVal + ")");
+        throw new BadRequestException(paramName + " parameter does not have a numerical format (" + paramVal + ")");
     }
 
     protected static Map<String, Object> extractMapFromParams(Map<String, List<String>> params, String operation) {
@@ -298,7 +281,7 @@ public class ResourceBase {
                 String key = entry.getKey();
                 List<String> paramValues = entry.getValue();
                 if (paramValues.size() != 1) {
-                    throw RestOperationException.badRequest("Only one map_* (" + key + ") query parameter allowed for '" + operation
+                    throw new BadRequestException("Only one map_* (" + key + ") query parameter allowed for '" + operation
                             + "' operation (" + paramValues.size() + " passed).");
                 }
                 String mapKey = key.substring("map_".length());
@@ -316,7 +299,7 @@ public class ResourceBase {
         List<String> users = getStringListParam("user", false, params, "nominate");
         List<String> groups = getStringListParam("group", false, params, "nominate");
         if (required && (users.isEmpty() && groups.isEmpty()) ) {
-            throw RestOperationException.badRequest("At least 1 query parameter (either 'user' or 'group') is required for the '" + operation + "' operation.");
+            throw new BadRequestException("At least 1 query parameter (either 'user' or 'group') is required for the '" + operation + "' operation.");
         }
         
         for( String user : users ) {
@@ -361,12 +344,10 @@ public class ResourceBase {
         if( statusStrList != null && ! statusStrList.isEmpty() ) { 
             statuses = new ArrayList<Status>();
             for( String statusStr : statusStrList ) { 
-                String goodStatusStr = statusStr.substring(0, 1).toUpperCase()
-                        + statusStr.substring(1).toLowerCase();
                 try { 
-                    statuses.add(Status.valueOf(goodStatusStr));
+                    statuses.add(getEnum(statusStr));
                 } catch(IllegalArgumentException iae) { 
-                    throw RestOperationException.badRequest(goodStatusStr + " is not a valid status type for a task." );
+                    throw new BadRequestException(statusStr + " is not a valid status type for a task." );
                 }
             }
         }
@@ -377,46 +358,29 @@ public class ResourceBase {
     
     static int PAGE_NUM = 0;
     static int PAGE_SIZE = 1;
-   
-    static String PAGE_LONG_PARAM = "page";
-    static String PAGE_SHORT_PARAM = "p";
-    static String SIZE_LONG_PARAM = "pageSize";
-    static String SIZE_SHORT_PARAM = "s";
-   
-    static Set<String> paginationParams = new HashSet<String>();
-    static { 
-        paginationParams.add(PAGE_LONG_PARAM);
-        paginationParams.add(PAGE_SHORT_PARAM);
-        paginationParams.add(SIZE_LONG_PARAM);
-        paginationParams.add(SIZE_SHORT_PARAM);
-    };
     
     protected static int [] getPageNumAndPageSize(Map<String, List<String>> params, String oper) {
         int [] pageInfo = new int[2];
+        Number page = getNumberParam("page", false, params, oper, false);
+        Number pageShort = getNumberParam("p", false, params, oper, false);
+        Number pageSize = getNumberParam("pageSize", false, params, oper, false);
+        Number pageSizeShort = getNumberParam("s", false, params, oper, false);
         
         int p = 0;
-        Number page = getNumberParam(PAGE_LONG_PARAM, false, params, oper, false);
+        int s = 10;
         if( page != null ) { 
             p = page.intValue();
-        } else { 
-            Number pageShort = getNumberParam(PAGE_SHORT_PARAM, false, params, oper, false);
-            if( pageShort != null ) { 
-                p = pageShort.intValue();
-            }
+        } else if( pageShort != null ) { 
+            p = pageShort.intValue();
         }
         if( p < 0 ) { 
             p = 0;
         }
         
-        int s = 10;
-        Number pageSize = getNumberParam(SIZE_LONG_PARAM, false, params, oper, false);
         if( pageSize != null ) { 
             s = pageSize.intValue();
-        } else { 
-            Number pageSizeShort = getNumberParam(SIZE_SHORT_PARAM, false, params, oper, false);
-            if( pageSizeShort != null ) { 
-                s = pageSizeShort.intValue();
-            }
+        } else if( pageSizeShort != null ) { 
+            s = pageSizeShort.intValue();
         }
         if( s < 0 ) { 
             s = 0;
@@ -427,35 +391,54 @@ public class ResourceBase {
         
         return pageInfo;
     }
-   
-    protected static <T> List<T> paginate(int[] pageInfo, List<T> results) { 
-        List<T> pagedResults = new ArrayList<T>();
-        assert pageInfo[0] >= 0;
-        if( pageInfo[0] == 0 ) { 
-            return results;
-        }  else if( pageInfo[0] > 0 ) { 
-            // for( i  = start of page; i < start of next page && i < num results; ++i ) 
-            for( int i = (pageInfo[0]-1)*pageInfo[1]; i < pageInfo[0]*pageInfo[1] && i < results.size(); ++i ) { 
-                pagedResults.add(results.get(i));
-            }
-        }
-        return pagedResults;
-    }
-    
-    protected static int getMaxNumResultsNeeded(int [] pageInfo) { 
-        int numResults = pageInfo[PAGE_NUM]*pageInfo[PAGE_SIZE];
-        if( pageInfo[PAGE_NUM] == 0 ) { 
-            numResults = Integer.MAX_VALUE;
-        } 
-        return numResults;
-    }
     
     // Other helper methods ------------------------------------------------------------------------------------------------------
     
-    public static String getRelativePath(HttpServletRequest request) { 
+    protected String getRelativePath(HttpServletRequest request) { 
         String path = request.getRequestURL().toString();
         path = path.replaceAll( ".*" + request.getServletContext().getContextPath(), "");
         return path;
     }
+    
+    protected static Status getEnum(String value) {
+
+		String lowerCaseValue = value.toLowerCase();
+	
+
+		if (lowerCaseValue.equals("created")) { 
+
+			return Status.Created;
+		} else if (lowerCaseValue.equals("ready")) {
+
+			return Status.Ready;
+		} else if (lowerCaseValue.equals("reserved")) {
+
+			return Status.Reserved;
+		} else if (lowerCaseValue.equals("inprogress")) {
+
+			return Status.InProgress;
+		} else if (lowerCaseValue.equals("suspended")) {
+
+			return Status.Suspended;
+		} else if (lowerCaseValue.equals("failed")) {
+
+			return Status.Failed;
+		} else if (lowerCaseValue.equals("completed")) {
+
+			return Status.Completed;
+		} else if (lowerCaseValue.equals("error")) {
+
+			return Status.Error;
+		} else if (lowerCaseValue.equals("exited")) {
+
+			return Status.Exited;
+		} else if (lowerCaseValue.equals("obsolete")) {
+
+			return Status.Obsolete;
+		}
+
+		else throw new IllegalArgumentException();
+
+	}
     
 }
