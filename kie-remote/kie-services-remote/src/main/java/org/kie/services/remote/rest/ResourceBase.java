@@ -405,7 +405,7 @@ public class ResourceBase {
 		String lowerCaseValue = value.toLowerCase();
 	
 
-		if (lowerCaseValue.equals("created")) {
+		if (lowerCaseValue.equals("created")) { 
 
 			return Status.Created;
 		} else if (lowerCaseValue.equals("ready")) {
