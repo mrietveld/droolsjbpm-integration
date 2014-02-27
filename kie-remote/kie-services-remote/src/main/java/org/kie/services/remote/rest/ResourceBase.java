@@ -344,12 +344,10 @@ public class ResourceBase {
         if( statusStrList != null && ! statusStrList.isEmpty() ) { 
             statuses = new ArrayList<Status>();
             for( String statusStr : statusStrList ) { 
-                String goodStatusStr = statusStr.substring(0, 1).toUpperCase()
-                        + statusStr.substring(1).toLowerCase();
                 try { 
-                    statuses.add(Status.valueOf(goodStatusStr));
+                    statuses.add(Status.getEnum(statusStr));
                 } catch(IllegalArgumentException iae) { 
-                    throw new BadRequestException(goodStatusStr + " is not a valid status type for a task." );
+                    throw new BadRequestException(statusStr + " is not a valid status type for a task." );
                 }
             }
         }
