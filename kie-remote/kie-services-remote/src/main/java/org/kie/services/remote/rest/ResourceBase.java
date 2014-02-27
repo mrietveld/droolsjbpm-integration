@@ -345,7 +345,7 @@ public class ResourceBase {
             statuses = new ArrayList<Status>();
             for( String statusStr : statusStrList ) { 
                 try { 
-                    statuses.add(Status.getEnum(statusStr));
+                    statuses.add(getEnum(statusStr));
                 } catch(IllegalArgumentException iae) { 
                     throw new BadRequestException(statusStr + " is not a valid status type for a task." );
                 }
@@ -399,5 +399,46 @@ public class ResourceBase {
         path = path.replaceAll( ".*" + request.getServletContext().getContextPath(), "");
         return path;
     }
+    
+    protected static Status getEnum(String value) {
+
+		String lowerCaseValue = value.toLowerCase();
+	
+
+		if (lowerCaseValue.equals("created")) {
+
+			return Status.Created;
+		} else if (lowerCaseValue.equals("ready")) {
+
+			return Status.Ready;
+		} else if (lowerCaseValue.equals("reserved")) {
+
+			return Status.Reserved;
+		} else if (lowerCaseValue.equals("inprogress")) {
+
+			return Status.InProgress;
+		} else if (lowerCaseValue.equals("suspended")) {
+
+			return Status.Suspended;
+		} else if (lowerCaseValue.equals("failed")) {
+
+			return Status.Failed;
+		} else if (lowerCaseValue.equals("completed")) {
+
+			return Status.Completed;
+		} else if (lowerCaseValue.equals("error")) {
+
+			return Status.Error;
+		} else if (lowerCaseValue.equals("exited")) {
+
+			return Status.Exited;
+		} else if (lowerCaseValue.equals("obsolete")) {
+
+			return Status.Obsolete;
+		}
+
+		else throw new IllegalArgumentException();
+
+	}
     
 }
