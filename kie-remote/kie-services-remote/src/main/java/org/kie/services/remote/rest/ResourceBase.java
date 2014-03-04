@@ -27,7 +27,6 @@ import org.kie.api.command.Command;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
@@ -344,12 +343,10 @@ public class ResourceBase {
         if( statusStrList != null && ! statusStrList.isEmpty() ) { 
             statuses = new ArrayList<Status>();
             for( String statusStr : statusStrList ) { 
-                String goodStatusStr = statusStr.substring(0, 1).toUpperCase()
-                        + statusStr.substring(1).toLowerCase();
                 try { 
-                    statuses.add(Status.valueOf(goodStatusStr));
+                    statuses.add(getEnum(statusStr));
                 } catch(IllegalArgumentException iae) { 
-                    throw new BadRequestException(goodStatusStr + " is not a valid status type for a task." );
+                    throw new BadRequestException(statusStr + " is not a valid status type for a task." );
                 }
             }
         }
@@ -400,6 +397,19 @@ public class ResourceBase {
         String path = request.getRequestURL().toString();
         path = path.replaceAll( ".*" + request.getServletContext().getContextPath(), "");
         return path;
+    }
+    
+    protected static Status getEnum(String value) {
+        value = value.substring(0,1).toUpperCase() + value.substring(1).toLowerCase();
+
+        try { 
+            return Status.valueOf(value);
+        } catch( IllegalArgumentException iae ) { 
+           if( value.equalsIgnoreCase("inprogress") )  { 
+               return Status.InProgress;
+           }
+           throw iae;
+        }
     }
     
 }
