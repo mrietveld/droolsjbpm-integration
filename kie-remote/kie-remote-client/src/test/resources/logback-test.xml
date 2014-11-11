@@ -20,6 +20,10 @@
   <!--  gen classes tests.. -->
   <logger name="org.kie.services.client.api.command" level="info" />
   
+  <!--  remote client tests.. -->
+  <logger name="org.kie.remote.client" level="info" />
+  <logger name="org.kie.services.client" level="debug" />
+  
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

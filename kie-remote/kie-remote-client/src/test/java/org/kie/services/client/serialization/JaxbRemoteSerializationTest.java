@@ -18,16 +18,25 @@ package org.kie.services.client.serialization;
 import static org.kie.services.client.serialization.JaxbSerializationProvider.split;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
 
+import org.dom4j.Element;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.junit.Assume;
@@ -39,6 +48,11 @@ import org.kie.services.client.serialization.AbstractRemoteSerializationTest;
 import org.kie.services.client.serialization.JaxbSerializationProvider;
 import org.kie.services.client.serialization.JsonRemoteSerializationTest;
 import org.kie.services.client.serialization.AbstractRemoteSerializationTest.TestType;
+import org.kie.remote.jaxb.gen.JaxbStringObjectPair;
+import org.kie.remote.jaxb.gen.JaxbStringObjectPairArray;
+import org.kie.remote.jaxb.gen.StartProcessCommand;
+import org.kie.services.client.AbstractRemoteSerializationTest;
+import org.kie.services.client.builder.objects.MyType;
 import org.kie.services.client.serialization.jaxb.impl.task.JaxbTaskSummary;
 import org.kie.test.objects.MyType;
 import org.kie.test.util.compare.ComparePair;
@@ -309,4 +323,89 @@ public class JaxbRemoteSerializationTest extends AbstractRemoteSerializationTest
         ComparePair.compareObjectsViaFields(jaxbTaskSum, jaxbTaskSumCopy, "subTaskStrategy", "potentialOwners");
     }
 
+    @Test
+    public void listSerializationTest() throws Exception {
+        addClassesToSerializationProvider(JaxbListWrapper.class, ElementListWrapper.class);
+        
+        List<String> origList = new ArrayList<String>(2);
+        origList.add("a");
+        origList.add("b");
+       
+        StartProcessCommand cmd = new StartProcessCommand();
+        cmd.setProcessId("test");
+        JaxbStringObjectPairArray map = new JaxbStringObjectPairArray();
+        JaxbStringObjectPair keyValue = new JaxbStringObjectPair();
+        keyValue.setKey("pList");
+        Class elemClass = origList.get(0).getClass();
+        keyValue.setValue(createJaxbElementWrapper(origList, elemClass));
+        map.getItems().add(keyValue);
+        cmd.setParameter(map);
+        StartProcessCommand copyCmd = testRoundTrip(cmd);
+        Object copyWrapper = copyCmd.getParameter().getItems().iterator().next().getValue();
+        assertNotNull("Wrapper object is null", copyWrapper);
+
+    }
+  
+    private static <T> JAXBElement createJaxbElementWrapper(List<T> list, Class<T> elemClass) { 
+        List<JAXBElement> jaxbElemList = new ArrayList<JAXBElement>(list.size());
+        for( T elem : list ) { 
+           jaxbElemList.add(new JAXBElement<T>(
+                   new QName("elem"),
+                   elemClass,
+                   elem));
+        }
+        return new JAXBElement<JaxbListWrapper>(
+                new QName("list"),
+                JaxbListWrapper.class, 
+                new JaxbListWrapper<JAXBElement>(jaxbElemList));
+    }
+   
+    @XmlRootElement(name="list-wrapper")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class JaxbListWrapper<T> { 
+      
+        public JaxbListWrapper() { 
+            // default
+        }
+        
+        public JaxbListWrapper(List<T> list) { 
+            this.list = list; 
+        }
+       
+        @XmlAnyElement(lax=true)
+        private List<T> list;
+
+        public List<T> getList() {
+            return list;
+        }
+
+        public void setList( List<T> list) { 
+            this.list = list;
+        } 
+    }
+    
+    @XmlRootElement(name="list-wrapper")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class ElementListWrapper<T> { 
+      
+        public ElementListWrapper() { 
+            // default
+        }
+        
+        public ElementListWrapper(List<T> list) { 
+            this.list = list; 
+        }
+       
+        @XmlAnyElement(lax=true)
+        @XmlElementWrapper(name="list")
+        private List<T> list;
+
+        public List<T> getList() {
+            return list;
+        }
+
+        public void setList( List<T> list) { 
+            this.list = list;
+        } 
+    }
 }

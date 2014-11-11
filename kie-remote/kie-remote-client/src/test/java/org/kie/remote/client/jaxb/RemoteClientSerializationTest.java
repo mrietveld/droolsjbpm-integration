@@ -15,6 +15,7 @@
 
 package org.kie.remote.client.jaxb;
 
+import static org.junit.Assert.*;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
 
 import java.util.ArrayList;
@@ -26,6 +27,16 @@ import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+
+import org.jbpm.services.task.impl.model.TaskImpl;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
+
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbI18NText;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
@@ -44,6 +55,9 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.services.client.serialization.JaxbSerializationProvider;
 import org.kie.services.client.serialization.JsonSerializationProvider;
+import org.kie.remote.jaxb.gen.JaxbStringObjectPair;
+import org.kie.remote.jaxb.gen.JaxbStringObjectPairArray;
+import org.kie.remote.jaxb.gen.StartProcessCommand;
 import org.kie.services.client.serialization.jaxb.impl.task.JaxbTaskSummary;
 import org.kie.test.util.compare.ComparePair;
 import org.slf4j.Logger;
