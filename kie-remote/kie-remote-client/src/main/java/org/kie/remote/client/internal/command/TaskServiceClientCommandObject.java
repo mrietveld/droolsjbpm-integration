@@ -15,9 +15,7 @@
 
 package org.kie.remote.client.internal.command;
 
-import static org.kie.remote.client.jaxb.ConversionUtil.convertDateToXmlGregorianCalendar;
-import static org.kie.remote.client.jaxb.ConversionUtil.convertMapToJaxbStringObjectPairArray;
-import static org.kie.remote.client.jaxb.ConversionUtil.convertMapToStringKeyObjectValueMap;
+import static org.kie.remote.client.jaxb.ConversionUtil.*;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
