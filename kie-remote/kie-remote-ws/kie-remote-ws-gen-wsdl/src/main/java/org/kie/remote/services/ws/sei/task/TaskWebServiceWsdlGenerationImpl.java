@@ -33,10 +33,4 @@ public class TaskWebServiceWsdlGenerationImpl implements TaskWebService {
     public void taskOperation( TaskOperationRequest arg0 ) throws TaskWebServiceException {
     }
 
-    @Override
-    public JaxbTaskSummaryListResponse query( TaskQueryRequest arg0 ) throws TaskWebServiceException {
-        return null;
-    }
-
-
 }

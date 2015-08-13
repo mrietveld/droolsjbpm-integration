@@ -14,7 +14,7 @@
 */
 
 
-package org.kie.remote.services.ws.sei.knowledge;
+package org.kie.remote.services.ws.sei.asset;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -27,8 +27,8 @@ import org.kie.remote.services.ws.common.KieRemoteWebServiceException;
 import org.kie.remote.services.ws.sei.ServicesVersion;
 
 
-@WebService(name = "KnowledgeStoreService", targetNamespace = KnowledgeStoreWebService.NAMESPACE)
-public interface KnowledgeStoreWebService {
+@WebService(name = "KnowledgeStoreService", targetNamespace = AssetManagementWebService.NAMESPACE)
+public interface AssetManagementWebService {
 
     static final String NAMESPACE = "http://services.remote.kie.org/" + ServicesVersion.VERSION + "/knowledge";
     

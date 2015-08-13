@@ -19,20 +19,30 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "stringObjectEntry", propOrder = {
-    "value"
+@XmlType(name = "StringObjectEntry", propOrder = {
+        "value"
 })
 public class StringObjectEntry {
 
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     protected Object value;
     
     @XmlAttribute(name = "key")
     protected String key;
 
+    public StringObjectEntry() { 
+        // JAXB default constructor 
+    }
+    
+    public StringObjectEntry(String key, Object val) { 
+       this.key = key;
+       this.value = val;
+    }
 }
 

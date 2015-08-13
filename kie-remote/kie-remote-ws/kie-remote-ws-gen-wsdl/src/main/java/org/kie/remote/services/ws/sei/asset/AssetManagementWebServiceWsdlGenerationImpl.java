@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei.knowledge;
+package org.kie.remote.services.ws.sei.asset;
 
 import javax.jws.WebService;
 
@@ -26,8 +26,8 @@ import org.kie.remote.services.ws.common.KieRemoteWebServiceException;
         serviceName = "KnowledgeStoreService", 
         portName = "KnowledgeStoreServicePort", 
         name = "KnowledgeStoreService", 
-        targetNamespace = KnowledgeStoreWebService.NAMESPACE)
-public class KnowledgeStoreWebServiceWsdlGenerationImpl implements KnowledgeStoreWebService {
+        targetNamespace = AssetManagementWebService.NAMESPACE)
+public class AssetManagementWebServiceWsdlGenerationImpl implements AssetManagementWebService {
 
     @Override
     public RepositoryResponse getRepositories(RepositoriesRequest arg0) throws KieRemoteWebServiceException {

@@ -46,10 +46,4 @@ public interface ProcessWebService {
     @ResponseWrapper(localName = "manageWorkItemResponse", targetNamespace = ProcessWebService.NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperVoidResponse")
     public void manageWorkItem(@WebParam(name = "request", targetNamespace = "") ManageWorkItemRequest workItemRequest) throws KieRemoteWebServiceException;
 
-    @WebMethod(action = "urn:QueryProcess")
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "queryProcess", targetNamespace = ProcessWebService.NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperQueryProcessRequest")
-    @ResponseWrapper(localName = "queryProcessResponse", targetNamespace = ProcessWebService.NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperProcessInstanceResponse")
-    public Jaxb query(@WebParam(name = "request", targetNamespace = "") QueryProcessRequest processQueryRequest) throws KieRemoteWebServiceException;
-
 }

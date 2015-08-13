@@ -15,7 +15,9 @@
 
 package org.kie.remote.services.ws.sei;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,12 +27,27 @@ import javax.xml.bind.annotation.XmlType;
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "stringObjectEntryList", propOrder = {
-    "entries"
-})
+@XmlType(name = "StringObjectEntryList", propOrder = {
+        "entries"
+    })
 public class StringObjectEntryList {
 
     @XmlElement(name = "entry", nillable = true)
-    protected List<StringObjectEntry> entries;
+    private List<StringObjectEntry> entries;
 
+    public StringObjectEntryList() { 
+        // JAXB Default constructor
+    }
+
+    public List<StringObjectEntry> getEntries() {
+        if( entries == null ) { 
+            entries = new ArrayList<StringObjectEntry>();
+        }
+        return entries;
+    }
+
+    public void setEntries( List<StringObjectEntry> entries ) {
+        this.entries = entries;
+    }
+    
 }

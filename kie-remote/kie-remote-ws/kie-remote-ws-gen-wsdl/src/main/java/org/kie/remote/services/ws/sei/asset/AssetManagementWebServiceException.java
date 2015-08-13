@@ -13,17 +13,17 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei.knowledge;
+package org.kie.remote.services.ws.sei.asset;
 
 import org.kie.remote.services.ws.common.KieRemoteWebServiceException;
 import org.kie.remote.services.ws.common.WebServiceFaultInfo;
 
-public class KnowledgeStoreWebServiceException extends KieRemoteWebServiceException {
+public class AssetManagementWebServiceException extends KieRemoteWebServiceException {
 
     /** default serial version UID */
     private static final long serialVersionUID = 2301L;
 
-    public KnowledgeStoreWebServiceException(String message, WebServiceFaultInfo faultInfo) {
+    public AssetManagementWebServiceException(String message, WebServiceFaultInfo faultInfo) {
         super(message, faultInfo);
     }
 
