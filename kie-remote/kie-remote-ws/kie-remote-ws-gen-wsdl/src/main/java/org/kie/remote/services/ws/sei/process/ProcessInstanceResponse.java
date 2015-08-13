@@ -47,7 +47,7 @@ public class ProcessInstanceResponse {
     private String processId;
 
     @XmlElement(required=true)
-    private ProcessInstanceState processInstanceState;
+    private ProcessInstanceState state;
 
     @XmlElement
     private List<String> eventTypes = new ArrayList<String>();

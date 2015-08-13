@@ -31,6 +31,8 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ProcessInstanceVariableMessage", propOrder = {
     "processInstanceId",
+    "correlationKey",
+    "get",
     "variables",
     "variableIds"
 })
@@ -42,6 +44,9 @@ public class ProcessInstanceVariableMessage {
 
     @XmlElement
     private CorrelationKey correlationKey;
+
+    @XmlElement(required=true)
+    private Boolean get;
 
     @XmlElement
     private StringObjectEntryList variables;

@@ -10,14 +10,12 @@ import javax.xml.bind.annotation.XmlType;
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaskOperationRequest", propOrder = {
+@XmlType(name = "ManageTaskContentMessage", propOrder = {
     "taskId", 
     "operation",
-    "userId",
-    "targetUserOrGroupId",
-    "data"
+    "operationContent"
 })
-public class ManageTaskContentRequest {
+public class ManageTaskContentMessage {
 
     @XmlElement(required=true)
     @XmlSchemaType(name="long")
@@ -26,10 +24,6 @@ public class ManageTaskContentRequest {
     @XmlElement(required=true)
     private ManageTaskContentOperationType operation;
     
-    @XmlElement(required=true)
-    @XmlSchemaType(name="string")
-    private String requestingUserId;
-   
     @XmlElement(required=false)
     private ManageTaskContentOperationContent operationContent;
     

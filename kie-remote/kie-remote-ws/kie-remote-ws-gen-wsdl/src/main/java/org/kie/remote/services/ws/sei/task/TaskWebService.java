@@ -49,7 +49,7 @@ public interface TaskWebService {
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "manageTaskContent", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperManageTaskContent")
     @ResponseWrapper(localName = "manageTaskContentResponse", targetNamespace = "http://services.remote.kie.org/process", className = "org.kie.remote.services.ws.wsdl.generated.WrapperManageTaskContentResponse")
-    public ManageTaskContentResponse manageTaskContent(@WebParam(name = "arg0", targetNamespace = "") ManageTaskContentRequest arg0) throws TaskWebServiceException;
+    public ManageTaskContentMessage manageTaskContent(@WebParam(name = "arg0", targetNamespace = "") ManageTaskContentMessage arg0) throws TaskWebServiceException;
 
     @WebMethod(action = "urn:GetTask")
     @WebResult(targetNamespace = "")
@@ -61,6 +61,6 @@ public interface TaskWebService {
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "getTaskSummary", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperGetTaskSummary")
     @ResponseWrapper(localName = "taskSummaryResponse", targetNamespace = "http://services.remote.kie.org/process", className = "org.kie.remote.services.ws.wsdl.generated.WrapperGetTaskSummaryResponse")
-    public TaskSummaryResponse getTaskSummary(@WebParam(name = "arg0", targetNamespace = "") GetTaskSummaryRequest arg0) throws TaskWebServiceException;
+    public TaskSummaryResponse getTaskSummary(@WebParam(name = "arg0", targetNamespace = "") GetTaskRequest arg0) throws TaskWebServiceException;
 
 }

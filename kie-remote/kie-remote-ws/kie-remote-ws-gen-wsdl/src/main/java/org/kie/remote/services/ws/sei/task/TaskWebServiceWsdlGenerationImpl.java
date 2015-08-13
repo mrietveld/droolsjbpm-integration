@@ -38,7 +38,7 @@ public class TaskWebServiceWsdlGenerationImpl implements TaskWebService {
     }
 
     @Override
-    public ManageTaskContentResponse manageTaskContent( ManageTaskContentRequest arg0 ) throws TaskWebServiceException {
+    public ManageTaskContentMessage manageTaskContent( ManageTaskContentMessage arg0 ) throws TaskWebServiceException {
         return null;
     }
 
@@ -48,7 +48,7 @@ public class TaskWebServiceWsdlGenerationImpl implements TaskWebService {
     }
 
     @Override
-    public TaskSummaryResponse getTaskSummary( GetTaskSummaryRequest arg0 ) throws TaskWebServiceException {
+    public TaskSummaryResponse getTaskSummary( GetTaskRequest arg0 ) throws TaskWebServiceException {
         return null;
     }
 

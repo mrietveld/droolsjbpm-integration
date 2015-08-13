@@ -33,6 +33,7 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
     "deploymentId",
     "operation",
     "processInstanceId",
+    "correlationKey",
     "processDefinitionId",
     "parameters",
     "event",

@@ -19,6 +19,7 @@ package org.kie.remote.services.ws.sei;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -72,13 +73,17 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
             for( int i = 0; i < origElements.length; ++i ) {
                 elements[i] = marshal(origElements[i], marshalledObjs);
             }
-            return new CollectionWrapper(elements, type);
+            CollectionWrapper cw = new CollectionWrapper();
+            cw.setType(type);
+            cw.setElements(elements);
+            return cw;
         } else if( o instanceof Map ) {
             if( !marshalledObjs.add(o) ) {
                 throw new IllegalStateException("Recursively linked collections are not supported!");
             }
             Map<String, Object> map = (Map<String, Object>) o; 
             StringObjectEntryList entryList = new StringObjectEntryList();
+            entryList.setEntries(new ArrayList<StringObjectEntry>(map.size()));
             for( Entry<String, Object> entry : map.entrySet() ) { 
                 Object newVal = marshal(entry.getValue(), marshalledObjs);
                 StringObjectEntry xmlEntr = new StringObjectEntry(entry.getKey(), newVal);
@@ -97,6 +102,9 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
             CollectionWrapper c = (CollectionWrapper) o;
             Collection newCollection;
             Object [] elements = c.getElements();
+            if( elements == null ) { 
+               elements = new Object[0];
+            }
             switch( c.getType() ) { 
             case LIST:
                 newCollection = new ArrayList(elements.length);
@@ -119,6 +127,9 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
             return newCollection;
         } else if( o instanceof StringObjectEntryList ) {
             StringObjectEntryList soel = (StringObjectEntryList) o;
+            if( ((StringObjectEntryList) o).getEntries() == null ) { 
+                ((StringObjectEntryList) o).setEntries(Collections.EMPTY_LIST);
+            }
             Map<String, Object> map = new HashMap<String, Object>();
             for( StringObjectEntry keyValue : soel.getEntries() ) { 
                 Object newVal = unmarshal(keyValue.getValue());

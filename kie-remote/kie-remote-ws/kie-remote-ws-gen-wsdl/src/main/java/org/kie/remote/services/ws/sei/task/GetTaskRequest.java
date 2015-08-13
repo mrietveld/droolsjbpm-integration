@@ -10,9 +10,9 @@ import javax.xml.bind.annotation.XmlType;
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaskOperationRequest", propOrder = {
-    "taskId", 
-    "requestingUserId",
+@XmlType(name = "GetTaskRequest", propOrder = {
+    "taskId",
+    "summary"
 })
 public class GetTaskRequest {
 
@@ -21,7 +21,7 @@ public class GetTaskRequest {
     private Long taskId;
 
     @XmlElement(required=true)
-    @XmlSchemaType(name="string")
-    private String requestingUserId;
-    
+    @XmlSchemaType(name="boolean")
+    private Boolean summary;
+
 }

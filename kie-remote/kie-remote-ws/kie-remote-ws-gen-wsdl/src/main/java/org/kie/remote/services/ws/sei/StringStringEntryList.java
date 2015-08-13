@@ -13,31 +13,37 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei.process;
+package org.kie.remote.services.ws.sei;
+
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
-import org.kie.remote.services.ws.sei.StringStringEntryList;
 
 /**
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CorrelationKey", propOrder = {
-        "name",
-        "properties"
+@XmlType(name = "StringStringEntryList", propOrder = {
+        "entries"
     })
-public class CorrelationKey {
+public class StringStringEntryList {
 
-        @XmlElement
-        @XmlSchemaType(name="string")
-        private String name;
+    @XmlElement(name = "entry")
+    private List<StringStringEntry> entries;
 
-        @XmlElement(required=true)
-        private StringStringEntryList properties;
-        
+    public StringStringEntryList() { 
+        // JAXB Default constructor
+    }
+
+    public List<StringStringEntry> getEntries() {
+        return entries;
+    }
+
+    public void setEntries( List<StringStringEntry> entries ) {
+        this.entries = entries;
+    }
+    
 }

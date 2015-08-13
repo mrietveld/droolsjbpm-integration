@@ -12,11 +12,9 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaskOperationRequest", propOrder = {
+@XmlType(name = "ModifyTaskRequest", propOrder = {
     "taskId", 
     "operation",
-    "userId",
-    "targetUserOrGroupId",
     "data"
 })
 public class ModifyTaskRequest {
@@ -28,10 +26,6 @@ public class ModifyTaskRequest {
     @XmlElement(required=true)
     private ModifyTaskOperationType operation;
     
-    @XmlElement(required=true)
-    @XmlSchemaType(name="string")
-    private String requestingUserId;
-   
     // For complete or fail
     @XmlElement(required=false)
     private StringObjectEntryList data;

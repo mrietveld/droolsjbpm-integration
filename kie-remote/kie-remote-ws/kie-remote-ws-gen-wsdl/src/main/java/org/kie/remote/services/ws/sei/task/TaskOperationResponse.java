@@ -12,7 +12,7 @@ import org.kie.api.task.model.Status;
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaskOperationRequest", propOrder = {
+@XmlType(name = "TaskOperationResponse", propOrder = {
     "taskId", 
     "requestedOperation",
     "operationStatus",

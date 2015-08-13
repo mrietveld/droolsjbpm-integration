@@ -34,11 +34,24 @@ public class KieRemoteWsAuthenticator extends Authenticator {
     protected static final Logger logger = LoggerFactory.getLogger(KieRemoteWsAuthenticator.class);
 
     private static ThreadLocal<PasswordAuthentication> threadLocalPasswordAuthentication = new ThreadLocal<PasswordAuthentication>();
-    private static KieRemoteWsAuthenticator _instance = new KieRemoteWsAuthenticator();
-
-
-    public static KieRemoteWsAuthenticator getInstance() {
-        return _instance;
+    private static AtomicBoolean authenticatorSet = new AtomicBoolean(false);
+   
+    public void setUserAndPassword(String userName, String password) { 
+       if( ! authenticatorSet.get() ) { 
+           // here: 1+ threads, Authenticator not yet set
+           synchronized(authenticatorSet) { 
+               // only 1 thread because of sync block
+               if( authenticatorSet.compareAndSet(false, true) ) { 
+                   Authenticator.setDefault(this);
+               }
+           }
+       }
+       PasswordAuthentication pwdAuth = threadLocalPasswordAuthentication.get();
+       if( pwdAuth != null ) { 
+           logger.debug("Replacing password authentication for user '{}' with new authentication for user '{}'", pwdAuth.getUserName(), userName);
+       } 
+       pwdAuth = new PasswordAuthentication(userName, password.toCharArray());
+       threadLocalPasswordAuthentication.set(pwdAuth);
     }
 
     private KieRemoteWsAuthenticator() {

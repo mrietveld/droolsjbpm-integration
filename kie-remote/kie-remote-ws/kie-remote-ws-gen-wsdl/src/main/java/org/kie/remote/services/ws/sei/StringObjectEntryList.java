@@ -15,7 +15,6 @@
 
 package org.kie.remote.services.ws.sei;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -35,14 +34,7 @@ public class StringObjectEntryList {
     @XmlElement(name = "entry", nillable = true)
     private List<StringObjectEntry> entries;
 
-    public StringObjectEntryList() { 
-        // JAXB Default constructor
-    }
-
     public List<StringObjectEntry> getEntries() {
-        if( entries == null ) { 
-            entries = new ArrayList<StringObjectEntry>();
-        }
         return entries;
     }
 

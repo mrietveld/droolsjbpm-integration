@@ -32,8 +32,7 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
 @XmlType(name = "TaskOperationRequest", propOrder = {
     "taskId", 
     "operation",
-    "userId",
-    "targetUserOrGroupId",
+    "targetUserOrGroupIds",
     "data"
 })
 public class TaskOperationRequest {
@@ -45,10 +44,6 @@ public class TaskOperationRequest {
     @XmlElement(required=true)
     private TaskOperationType operation;
     
-    @XmlElement(required=true)
-    @XmlSchemaType(name="string")
-    private String userId;
-   
     // for delegate or forward (1 user) or nominate (multiple users)
     @XmlElement(required=false)
     @XmlSchemaType(name="string")
