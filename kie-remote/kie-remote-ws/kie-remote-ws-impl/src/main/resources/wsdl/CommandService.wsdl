@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions 
 	xmlns="http://schemas.xmlsoap.org/wsdl/" 
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
 	xmlns:tns="http://services.remote.kie.org/VERSION/command" 
-    xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
-  
-    xmlns:wsp="http://www.w3.org/ns/ws-policy"
-    xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
 	name="CommandService" 
 	targetNamespace="http://services.remote.kie.org/VERSION/command" 
 	>
   <!-- JAX-WS Customizations: Wrapper styles, async. -->
-  <jaxws:bindings>
+  <jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
     <jaxws:enableWrapperStyle>true</jaxws:enableWrapperStyle>
     <jaxws:enableAsyncMapping>false</jaxws:enableAsyncMapping>
   </jaxws:bindings>
@@ -69,9 +65,9 @@
       <xs:element name="command-request" type="tns:jaxbCommandsRequest"/>
       
       <xs:complexType name="jaxbCommandsRequest">
-        <xs:annotation>
+         <xs:annotation>
           <xs:appinfo>
-            <jxb:class ref="org.kie.remote.client.jaxb.JaxbCommandsRequest"/>
+            <jxb:class ref="org.kie.remote.services.jaxb.JaxbCommandsRequest"/>
           </xs:appinfo>
         </xs:annotation>
        </xs:complexType>
@@ -89,13 +85,13 @@
       <xs:complexType name="jaxbCommandsResponse">
         <xs:annotation>
           <xs:appinfo>
-            <jxb:class ref="org.kie.remote.client.jaxb.JaxbCommandsResponse"/>
+            <jxb:class ref="org.kie.remote.services.jaxb.JaxbCommandsResponse"/>
           </xs:appinfo>
         </xs:annotation>
        </xs:complexType> 
+
     </xs:schema>
   </types>
-  
   <message name="execute">
     <part name="parameters" element="tns:execute"/>
   </message>
@@ -105,28 +101,22 @@
   <message name="CommandServiceException">
     <part name="fault" element="tns:CommandServiceException"/>
   </message>
-  <portType name="CommandServicePortType">
-    <jaxws:bindings>
+  <portType name="CommandWebService">
+    <jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
       <jaxws:class name="CommandWebService"/>
     </jaxws:bindings>
     <operation name="execute">
       <input wsam:Action="http://services.remote.kie.org/VERSION/command/CommandService/executeRequest" message="tns:execute"/>
       <output wsam:Action="http://services.remote.kie.org/VERSION/command/CommandService/executeResponse" message="tns:executeResponse"/>
       <fault message="tns:CommandServiceException" name="CommandServiceException" wsam:Action="http://services.remote.kie.org/VERSION/command/CommandService/execute/Fault/CommandServiceException">
-        <jaxws:bindings>
+        <jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
           <jaxws:class name="CommandWebServiceException"/>
         </jaxws:bindings>
       </fault>
     </operation>
   </portType>
- 
-  <!-- Binding: Plain text -->
-  
-  <binding name="CommandServiceBasicAuthBinding" type="tns:CommandServicePortType">
+  <binding name="CommandServiceBinding" type="tns:CommandWebService">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-    <wsp:Policy> 
-      <wsp:PolicyReference URI="#AddressingPolicy"/>          
-    </wsp:Policy>
     <operation name="execute">
       <soap:operation soapAction=""/>
       <input>
@@ -140,13 +130,11 @@
       </fault>
     </operation>
   </binding>
-  
-  <service name="CommandServiceBasicAuth">
-    <jaxws:bindings> 
-      <jaxws:class name="CommandServiceBasicAuthClient"/>
+  <service name="CommandService">
+    <jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
+      <jaxws:class name="CommandServiceClient"/>
     </jaxws:bindings>
-    <port name="CommandServiceBasicAuthPort" binding="tns:CommandServiceBasicAuthBinding">
-    <port name="CommandServicePort" binding="tns:CommandServicePortBinding">
+    <port name="CommandServicePort" binding="tns:CommandServiceBinding">
       <wsp:PolicyReference xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" URI="#UP_policy"/>
       <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
     </port>

@@ -35,12 +35,6 @@
       <artifactId>kie-remote-common</artifactId>
     </dependency>
 
-    <!-- webservices -->
-    <dependency>
-      <groupId>org.kie.remote.ws</groupId>
-      <artifactId>kie-remote-ws-common</artifactId>
-    </dependency>
-
     <!-- kie -->
     <dependency>
       <groupId>org.kie</groupId>
@@ -408,32 +402,6 @@
 
     </plugins>
   </build>
+  </build> 
 
-  <!-- setup corresponding executables on win/*nix -->
-  <profiles>
-    <profile>
-      <id>win</id>
-      <activation>
-        <os>
-          <family>windows</family>
-        </os>
-      </activation>
-      <properties>
-        <tool.wsgen>${java.home}/../bin/wsgen.exe</tool.wsgen>
-        <tool.wsimport>${java.home}/../bin/wsimport.exe</tool.wsimport>
-      </properties>
-    </profile>
-    <profile>
-      <id>nix</id>
-      <activation>
-        <os>
-          <family>!windows</family>
-        </os>
-      </activation>
-      <properties>
-        <tool.wsgen>${java.home}/../bin/wsgen</tool.wsgen>
-        <tool.wsimport>${java.home}/../bin/wsimport</tool.wsimport>
-      </properties>
-    </profile>
-  </profiles>
 </project>

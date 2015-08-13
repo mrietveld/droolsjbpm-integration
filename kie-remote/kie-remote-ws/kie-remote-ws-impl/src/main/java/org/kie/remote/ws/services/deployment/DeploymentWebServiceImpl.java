@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.services.remote.ws.deployment;
+package org.kie.remote.ws.services.deployment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,12 +33,12 @@ import org.kie.remote.services.ws.deployment.generated.DeploymentInfoResponse;
 import org.kie.remote.services.ws.deployment.generated.DeploymentWebService;
 import org.kie.remote.services.ws.deployment.generated.DeploymentWebServiceException;
 import org.kie.remote.services.ws.deployment.generated.ProcessIdsResponse;
+import org.kie.remote.ws.PaginationUtil;
 import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentJobResult;
 import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentUnit;
 import org.kie.services.client.serialization.jaxb.impl.deploy.JaxbDeploymentUnitList;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessDefinition;
 import org.kie.services.client.serialization.jaxb.impl.process.JaxbProcessDefinitionList;
-import org.kie.services.remote.ws.PaginationUtil;
 import org.kie.services.shared.ServicesVersion;
 
 // TODO: validation of input
@@ -84,11 +84,6 @@ public class DeploymentWebServiceImpl extends ResourceBase implements Deployment
             // TODO: faultInfo.setCorrelationId(?)
             faultInfo.setType(ExceptionType.VALIDATION);
             throw new DeploymentWebServiceException("Unknown operation type: " + request.getOperation(), faultInfo);
-        }
-        
-        // TODO: check job result
-        if( jobResult != null ) { 
-            
         }
         
         DeploymentInfoResponse response = new DeploymentInfoResponse();

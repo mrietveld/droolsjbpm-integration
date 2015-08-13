@@ -21,23 +21,40 @@
       <groupId>org.kie.remote</groupId>
       <artifactId>kie-remote-jaxb</artifactId>
     </dependency>
-    
+
     <!-- generated code -->
     <dependency>
       <groupId>org.kie.remote.ws</groupId>
       <artifactId>kie-remote-ws-common</artifactId>
     </dependency>
+
+    <!-- test -->
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-  
+
   <properties>
     <bugfix.version>1</bugfix.version>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <!--  0. delete all generated files because only the WSDL determines code, no code in VCS -->
+        <!-- 0. delete all generated files because only the WSDL determines code, no code in VCS -->
         <configuration>
           <filesets>
             <fileset>
@@ -50,7 +67,7 @@
           </filesets>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -83,12 +100,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-                <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources/</directory>
-                    </resource>
-                </resources>
+              <outputDirectory>${project.build.directory}/classes</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/resources/</directory>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
@@ -102,7 +119,7 @@
             <phase>process-resources</phase>
             <goals>
               <goal>replace</goal>
-            </goals>                    
+            </goals>
           </execution>
         </executions>
         <configuration>
@@ -123,12 +140,7 @@
           </replacements>
         </configuration>
       </plugin>
-                <!-- 
-                <wsdlFile>HistoryService.wsdl</wsdlFile>
-                <wsdlFile>ProcessService.wsdl</wsdlFile>
-                <wsdlFile>TaskService.wsdl</wsdlFile>
-                <wsdlFile>KnowledgeService.wsdl</wsdlFile>
-                -->
+      <!-- <wsdlFile>HistoryService.wsdl</wsdlFile> <wsdlFile>ProcessService.wsdl</wsdlFile> <wsdlFile>TaskService.wsdl</wsdlFile> <wsdlFile>KnowledgeService.wsdl</wsdlFile> -->
       <plugin>
         <groupId>org.jvnet.jax-ws-commons</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>

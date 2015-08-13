@@ -20,6 +20,7 @@ import static org.kie.remote.client.internal.command.AbstractRemoteCommandObject
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,6 +31,8 @@ import java.util.Set;
 import javax.ws.rs.core.HttpHeaders;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
 
 import org.apache.cxf.common.util.Base64Utility;
 import org.apache.cxf.endpoint.Client;
@@ -45,6 +48,8 @@ import org.kie.remote.client.internal.command.RemoteConfiguration;
 import org.kie.remote.client.jaxb.JaxbCommandsRequest;
 import org.kie.remote.client.jaxb.JaxbCommandsResponse;
 import org.kie.remote.client.ws.KieRemoteWsAuthenticator;
+import org.kie.remote.services.ws.command.generated.CommandServiceBasicAuthClient;
+import org.kie.remote.client.ws.WsAddressingClientLogicalHandler;
 import org.kie.remote.services.ws.command.generated.CommandWebService;
 import org.kie.remote.services.ws.command.generated.Execute;
 import org.kie.remote.services.ws.command.generated.ExecuteResponse;
@@ -140,6 +145,11 @@ class RemoteCommandWebserviceClientBuilderImpl extends RemoteWebserviceClientBui
             headers.put(JaxbSerializationProvider.EXECUTE_DEPLOYMENT_ID_HEADER, Arrays.asList(depIdHeader));
             proxyClient.getRequestContext().put(org.apache.cxf.message.Message.PROTOCOL_HEADERS, headers);
         }
+       
+        // handler chain to set the message id
+        List<Handler> handlerChain = new ArrayList<Handler>(1);
+        handlerChain.add(new WsAddressingClientLogicalHandler());
+        ((BindingProvider) commandService).getBinding().setHandlerChain(handlerChain);
 
         return commandService;
     }

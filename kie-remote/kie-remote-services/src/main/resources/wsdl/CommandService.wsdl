@@ -128,6 +128,9 @@
   
   <binding name="CommandServiceBasicAuthBinding" type="tns:CommandServicePortType">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <wsp:Policy> 
+      <wsp:PolicyReference URI="#AddressingPolicy"/>          
+    </wsp:Policy>
     <operation name="execute">
       <soap:operation soapAction=""/>
       <input>
@@ -150,8 +153,42 @@
       <jaxws:bindings> 
         <jaxws:provider>true</jaxws:provider>
       </jaxws:bindings>
+    <port name="CommandServicePort" binding="tns:CommandServicePortBinding">
+      <wsp:PolicyReference xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" URI="#UP_policy"/>
       <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
     </port>
   </service>
+  
+  <wsp:Policy wsu:Id="UP_policy" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+    <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+      <wsp:Policy>
+        <sp:IncludeTimestamp/>
+        <sp:TransportToken>
+          <wsp:Policy>
+            <sp:HttpsToken/>
+          </wsp:Policy>
+        </sp:TransportToken>
+        <sp:Layout>
+          <wsp:Policy>
+            <sp:Strict/>
+          </wsp:Policy>
+        </sp:Layout>
+        <sp:AlgorithmSuite>
+          <wsp:Policy>
+            <sp:Basic128/>
+          </wsp:Policy>
+        </sp:AlgorithmSuite>
+      </wsp:Policy>
+    </sp:TransportBinding>    
+  <sp:SupportingTokens xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+  <wsp:Policy>
+    <sp:UsernameToken xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy" sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Always">
+      <wsp:Policy>
+        <sp:WssUsernameToken11/>
+          </wsp:Policy>
+        </sp:UsernameToken>
+      </wsp:Policy>
+    </sp:SupportingTokens>
+  </wsp:Policy>
   
 </definitions>
