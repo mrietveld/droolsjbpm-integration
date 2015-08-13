@@ -45,6 +45,15 @@ public class WebServiceFaultInfo extends SerializableServiceObject {
     @XmlSchemaType(name="string")
     protected String correlationId;
 
+    public WebServiceFaultInfo() { 
+        // JAXB default constructor
+    }
+    
+    public WebServiceFaultInfo(String corrId, ExceptionType type) { 
+        this.correlationId = corrId;
+        this.type = type;
+    }
+    
     /**
      * @return type type of exception
      */

@@ -15,11 +15,13 @@
 
 package org.kie.remote.services.ws.common;
 
+import javax.xml.ws.WebServiceException;
 
 
 
 
-public class KieRemoteWebServiceException extends Exception {
+
+public class KieRemoteWebServiceException extends WebServiceException {
 
     /** Default serial version UID */
     private static final long serialVersionUID = 2301L;
@@ -31,8 +33,10 @@ public class KieRemoteWebServiceException extends Exception {
     private WebServiceFaultInfo faultInfo;
 
     /**
-     * 
-     * @param message
+     * Constructs a new exception with the specified detail 
+     * message. The cause is not initialized.
+     * @param message The detail message which is later 
+     *                retrieved using the getMessage method 
      * @param faultInfo
      */
     public KieRemoteWebServiceException(String message, WebServiceFaultInfo faultInfo) {
@@ -41,10 +45,14 @@ public class KieRemoteWebServiceException extends Exception {
     }
 
     /**
-     * 
-     * @param message
+     * Constructs a new exception with the specified detail 
+     * message and cause.
+     *
+     * @param message The detail message which is later retrieved
+     *                using the getMessage method
      * @param faultInfo
-     * @param cause
+     * @param cause   The cause which is saved for the later
+     *                 retrieval throw by the getCause method 
      */
     public KieRemoteWebServiceException(String message, WebServiceFaultInfo faultInfo, Throwable cause) {
         super(message, cause);
