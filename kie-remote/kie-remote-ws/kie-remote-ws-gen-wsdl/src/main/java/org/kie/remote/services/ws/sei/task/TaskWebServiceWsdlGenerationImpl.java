@@ -17,8 +17,6 @@ package org.kie.remote.services.ws.sei.task;
 
 import javax.jws.WebService;
 
-import org.kie.remote.client.jaxb.JaxbTaskSummaryListResponse;
-
 /**
  * Only used for WSDL generation
  */
@@ -30,13 +28,28 @@ import org.kie.remote.client.jaxb.JaxbTaskSummaryListResponse;
 public class TaskWebServiceWsdlGenerationImpl implements TaskWebService {
 
     @Override
-    public void taskOperation( TaskOperationRequest arg0 ) throws TaskWebServiceException {
-    }
-
-    @Override
-    public JaxbTaskSummaryListResponse query( TaskQueryRequest arg0 ) throws TaskWebServiceException {
+    public TaskOperationResponse taskOperation( TaskOperationRequest arg0 ) throws TaskWebServiceException {
         return null;
     }
 
+    @Override
+    public ModifyTaskResponse modifyTask( ModifyTaskRequest arg0 ) throws TaskWebServiceException {
+        return null;
+    }
+
+    @Override
+    public ManageTaskContentResponse manageTaskContent( ManageTaskContentRequest arg0 ) throws TaskWebServiceException {
+        return null;
+    }
+
+    @Override
+    public TaskResponse getTask( GetTaskRequest arg0 ) throws TaskWebServiceException {
+        return null;
+    }
+
+    @Override
+    public TaskSummaryResponse getTaskSummary( GetTaskSummaryRequest arg0 ) throws TaskWebServiceException {
+        return null;
+    }
 
 }

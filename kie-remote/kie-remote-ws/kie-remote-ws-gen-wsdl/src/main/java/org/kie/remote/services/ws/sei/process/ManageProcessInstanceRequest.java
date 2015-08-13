@@ -20,7 +20,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.kie.remote.services.ws.sei.JaxbUnknownAdapter;
 import org.kie.remote.services.ws.sei.StringObjectEntryList;
 
 /**
@@ -28,28 +30,37 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ManageProcessInstanceRequest", propOrder = {
-    "operation",
     "deploymentId",
+    "operation",
+    "processInstanceId",
     "processDefinitionId",
     "parameters",
-    "getVariables"
+    "event",
 })
 public class ManageProcessInstanceRequest {
 
-    @XmlElement
-    private ProcessInstanceOperationType operation;
-    
     @XmlElement(required=true)
     @XmlSchemaType(name="string")
     private String deploymentId;
     
-    @XmlElement(required=true)
+    @XmlElement
+    private ProcessInstanceOperationType operation;
+    
+    @XmlElement
+    @XmlSchemaType(name="long")
+    private Long processInstanceId;
+    
+    @XmlElement
+    private CorrelationKey correlationKey;
+
+    @XmlElement
     @XmlSchemaType(name="string")
     private String processDefinitionId;
 
     @XmlElement
     private StringObjectEntryList parameters;
+   
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
+    private Object event;
     
-    @XmlElement
-    private Boolean getVariables;
 }

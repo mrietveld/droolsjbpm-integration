@@ -34,8 +34,7 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
     "id",
     "processId",
     "state",
-    "eventTypes",
-    "variables"
+    "eventTypes"
 })
 public class ProcessInstanceResponse {
     
@@ -48,13 +47,9 @@ public class ProcessInstanceResponse {
     private String processId;
 
     @XmlElement(required=true)
-    @XmlSchemaType(name="int")
-    private ProcessInstanceState state; 
+    private ProcessInstanceState processInstanceState;
 
     @XmlElement
     private List<String> eventTypes = new ArrayList<String>();
-    
-    @XmlElement
-    private StringObjectEntryList variables;
     
 }

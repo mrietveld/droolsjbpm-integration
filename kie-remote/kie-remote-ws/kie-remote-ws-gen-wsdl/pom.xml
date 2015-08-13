@@ -20,17 +20,33 @@
       <groupId>javax.xml.ws</groupId>
       <artifactId>jaxws-api</artifactId>
     </dependency>
+    
     <dependency>
       <groupId>org.kie.remote.ws</groupId>
       <artifactId>kie-remote-ws-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.remote</groupId>
+      <artifactId>kie-remote-jaxb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.remote</groupId>
       <artifactId>kie-remote-client</artifactId>
     </dependency>
+  
+    <!-- other dependencies --> 
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+   
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
     
     <!-- test -->
@@ -86,6 +102,7 @@
         <artifactId>jaxws-maven-plugin</artifactId>
         <version>2.3</version>
         <executions>
+          <!-- 
           <execution>
             <id>generate-command-wsdl</id>
             <goals>
@@ -112,19 +129,7 @@
               <resourceDestDir>${basedir}/src/main/resources/wsdl</resourceDestDir>
             </configuration>
           </execution>
-          <execution>
-            <id>generate-history-wsdl</id>
-            <goals>
-              <goal>wsgen</goal>
-            </goals>
-            <configuration>
-              <executable>${tool.wsgen}</executable>
-              <sei>org.kie.remote.services.ws.sei.history.HistoryWebServiceWsdlGenerationImpl</sei>
-              <genWsdl>true</genWsdl>
-              <inlineSchemas>true</inlineSchemas>
-              <resourceDestDir>${basedir}/src/main/resources/wsdl</resourceDestDir>
-            </configuration>
-          </execution>
+          -->
           <execution>
             <id>generate-process-wsdl</id>
             <goals>
@@ -152,6 +157,19 @@
             </configuration>
           </execution>
           <!-- 
+          <execution> 
+            <id>generate-query-wsdl</id>
+            <goals>
+              <goal>wsgen</goal>
+            </goals>
+            <configuration>
+              <executable>${tool.wsgen}</executable>
+              <sei>org.kie.remote.services.ws.sei.query.QueryWebServiceWsdlGenerationImpl</sei>
+              <genWsdl>true</genWsdl>
+              <inlineSchemas>true</inlineSchemas>
+              <resourceDestDir>${basedir}/src/main/resources/wsdl</resourceDestDir>
+            </configuration>
+          </execution> 
           <execution> 
             <id>generate-knowledge-wsdl</id>
             <goals>

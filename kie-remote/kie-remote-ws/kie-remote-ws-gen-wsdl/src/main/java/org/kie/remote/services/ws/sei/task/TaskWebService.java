@@ -23,7 +23,6 @@ import javax.jws.WebService;
 import javax.xml.ws.RequestWrapper;
 import javax.xml.ws.ResponseWrapper;
 
-import org.kie.remote.client.jaxb.JaxbTaskSummaryListResponse;
 import org.kie.remote.services.ws.sei.ServicesVersion;
 
 /**
@@ -38,12 +37,30 @@ public interface TaskWebService {
     @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "taskOperation", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperTaskOperation")
     @ResponseWrapper(localName = "taskOperationResponse", targetNamespace = "http://services.remote.kie.org/process", className = "org.kie.remote.services.ws.wsdl.generated.WrapperTaskOperationResponse")
-    public void taskOperation(@WebParam(name = "arg0", targetNamespace = "") TaskOperationRequest arg0) throws TaskWebServiceException;
+    public TaskOperationResponse taskOperation(@WebParam(name = "arg0", targetNamespace = "") TaskOperationRequest arg0) throws TaskWebServiceException;
 
-    @WebMethod(action = "urn:Query")
+    @WebMethod(action = "urn:ModifyTask")
     @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "queryTasks", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperTaskQueryRequest")
-    @ResponseWrapper(localName = "queryTasksResponse", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperTaskQueryResponse")
-    public JaxbTaskSummaryListResponse query(@WebParam(name = "arg0", targetNamespace = "") TaskQueryRequest arg0) throws TaskWebServiceException;
+    @RequestWrapper(localName = "modifyTask", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperModifyTask")
+    @ResponseWrapper(localName = "modifyTaskResponse", targetNamespace = "http://services.remote.kie.org/process", className = "org.kie.remote.services.ws.wsdl.generated.WrapperModifyTaskResponse")
+    public ModifyTaskResponse modifyTask(@WebParam(name = "arg0", targetNamespace = "") ModifyTaskRequest arg0) throws TaskWebServiceException;
+
+    @WebMethod(action = "urn:ManageTaskContent")
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "manageTaskContent", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperManageTaskContent")
+    @ResponseWrapper(localName = "manageTaskContentResponse", targetNamespace = "http://services.remote.kie.org/process", className = "org.kie.remote.services.ws.wsdl.generated.WrapperManageTaskContentResponse")
+    public ManageTaskContentResponse manageTaskContent(@WebParam(name = "arg0", targetNamespace = "") ManageTaskContentRequest arg0) throws TaskWebServiceException;
+
+    @WebMethod(action = "urn:GetTask")
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getTask", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperGetTask")
+    @ResponseWrapper(localName = "taskResponse", targetNamespace = "http://services.remote.kie.org/process", className = "org.kie.remote.services.ws.wsdl.generated.WrapperGetTaskResponse")
+    public TaskResponse getTask(@WebParam(name = "arg0", targetNamespace = "") GetTaskRequest arg0) throws TaskWebServiceException;
+
+    @WebMethod(action = "urn:GetTaskSummary")
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getTaskSummary", targetNamespace = NAMESPACE, className = "org.kie.remote.services.ws.wsdl.generated.WrapperGetTaskSummary")
+    @ResponseWrapper(localName = "taskSummaryResponse", targetNamespace = "http://services.remote.kie.org/process", className = "org.kie.remote.services.ws.wsdl.generated.WrapperGetTaskSummaryResponse")
+    public TaskSummaryResponse getTaskSummary(@WebParam(name = "arg0", targetNamespace = "") GetTaskSummaryRequest arg0) throws TaskWebServiceException;
 
 }

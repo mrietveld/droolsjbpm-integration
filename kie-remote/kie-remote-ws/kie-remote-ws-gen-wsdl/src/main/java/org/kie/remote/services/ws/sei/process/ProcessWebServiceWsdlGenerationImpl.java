@@ -17,8 +17,6 @@ package org.kie.remote.services.ws.sei.process;
 
 import javax.jws.WebService;
 
-import org.kie.remote.services.ws.common.KieRemoteWebServiceException;
-
 /**
  * Only used for initial WSDL generation
  */
@@ -30,13 +28,20 @@ import org.kie.remote.services.ws.common.KieRemoteWebServiceException;
 public class ProcessWebServiceWsdlGenerationImpl implements ProcessWebService {
 
     @Override
-    public ProcessInstanceResponse manageProcess( ManageProcessInstanceRequest procDefIdAndParams )
-            throws KieRemoteWebServiceException {
+    public ProcessInstanceResponse manageProcess( ManageProcessInstanceRequest processInstanceRequest )
+            throws ProcessWebServiceException {
         return null;
     }
 
     @Override
-    public void manageWorkItem( ManageWorkItemRequest workItemRequest ) throws KieRemoteWebServiceException {
+    public void manageWorkItem( ManageWorkItemRequest workItemRequest ) throws ProcessWebServiceException {
+    }
+
+    @Override
+    public ProcessInstanceVariableMessage manageProcessInstanceVariables( ProcessInstanceVariableMessage processInstanceRequest )
+            throws ProcessWebServiceException {
+        // DBG Auto-generated method stub
+        return null;
     }
 
 }

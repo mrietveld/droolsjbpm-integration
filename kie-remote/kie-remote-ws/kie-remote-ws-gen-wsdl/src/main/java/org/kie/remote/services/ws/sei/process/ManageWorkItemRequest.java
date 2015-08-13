@@ -28,16 +28,13 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ManageWorkItemRequest", propOrder = {
-    "operation",
     "deploymentId",
+    "operation",
     "workItemId",
     "results"
 })
 public class ManageWorkItemRequest {
 
-    @XmlElement
-    private WorkItemOperationType operation;
-    
     @XmlElement(required=true)
     @XmlSchemaType(name="string")
     private String deploymentId;
@@ -46,6 +43,9 @@ public class ManageWorkItemRequest {
     @XmlSchemaType(name="long")
     private Long workItemId;
 
+    @XmlElement
+    private WorkItemOperationType operation;
+    
     @XmlElement
     private StringObjectEntryList results;
     

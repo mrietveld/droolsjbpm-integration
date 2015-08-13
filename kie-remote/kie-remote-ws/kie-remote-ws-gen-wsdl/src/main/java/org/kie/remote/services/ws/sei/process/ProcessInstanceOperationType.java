@@ -22,5 +22,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType
 public enum ProcessInstanceOperationType {
-    START, ABORT, SIGNAL, GET_INFO;
+    START, 
+    ABORT, 
+    SIGNAL, 
+    GET;
 }

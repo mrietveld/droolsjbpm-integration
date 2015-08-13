@@ -13,41 +13,40 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei;
+package org.kie.remote.services.ws.sei.process;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.kie.remote.services.ws.sei.StringObjectEntryList;
 
 /**
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StringObjectEntryList", propOrder = {
-        "entries"
-    })
-public class StringObjectEntryList {
-
-    @XmlElement(name = "entry", nillable = true)
-    private List<StringObjectEntry> entries;
-
-    public StringObjectEntryList() { 
-        // JAXB Default constructor
-    }
-
-    public List<StringObjectEntry> getEntries() {
-        if( entries == null ) { 
-            entries = new ArrayList<StringObjectEntry>();
-        }
-        return entries;
-    }
-
-    public void setEntries( List<StringObjectEntry> entries ) {
-        this.entries = entries;
-    }
+@XmlType(name = "ProcessInstanceVariableMessage", propOrder = {
+    "processInstanceId",
+    "variables",
+    "variableIds"
+})
+public class ProcessInstanceVariableMessage {
     
+    @XmlElement
+    @XmlSchemaType(name="long")
+    private Long processInstanceId;
+
+    @XmlElement
+    private CorrelationKey correlationKey;
+
+    @XmlElement
+    private StringObjectEntryList variables;
+
+    @XmlElement
+    private List<String> variableIds;
+
 }

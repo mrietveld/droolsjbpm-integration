@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei.knowledge;
+package org.kie.remote.services.ws.sei.asset;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,11 +22,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RepositoriesRequest", propOrder = {
+@XmlType(name = "ProjectOperationRequest", propOrder = {
     "deploymentId",
     "processInstanceId"
 })
-public class RepositoriesRequest {
+public class ProjectOperationRequest {
 
     @XmlElement(required=true)
     @XmlSchemaType(name="string")

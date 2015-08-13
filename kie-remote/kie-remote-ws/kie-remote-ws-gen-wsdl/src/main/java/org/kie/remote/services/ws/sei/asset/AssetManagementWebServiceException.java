@@ -13,21 +13,17 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei.process;
+package org.kie.remote.services.ws.sei.asset;
 
 import org.kie.remote.services.ws.common.KieRemoteWebServiceException;
 import org.kie.remote.services.ws.common.WebServiceFaultInfo;
 
-
-/**
- * Only used for initial WSDL generation
- */
-public class ProcessWebServiceException extends KieRemoteWebServiceException {
+public class AssetManagementWebServiceException extends KieRemoteWebServiceException {
 
     /** default serial version UID */
     private static final long serialVersionUID = 2301L;
 
-    public ProcessWebServiceException(String message, WebServiceFaultInfo faultInfo) {
+    public AssetManagementWebServiceException(String message, WebServiceFaultInfo faultInfo) {
         super(message, faultInfo);
     }
 

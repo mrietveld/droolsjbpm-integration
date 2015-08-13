@@ -22,5 +22,6 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType
 public enum WorkItemOperationType {
-    ABORT, COMPLETE, GET_INFO;
+    ABORT, 
+    COMPLETE;
 }

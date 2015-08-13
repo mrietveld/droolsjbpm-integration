@@ -1,21 +1,4 @@
-/*
- * Copyright 2015 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
-
 package org.kie.remote.services.ws.sei.task;
-
-import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,24 +19,19 @@ import org.kie.remote.services.ws.sei.StringObjectEntryList;
     "targetUserOrGroupId",
     "data"
 })
-public class TaskOperationRequest {
+public class ModifyTaskRequest {
 
     @XmlElement(required=true)
     @XmlSchemaType(name="long")
     private Long taskId;
     
     @XmlElement(required=true)
-    private TaskOperationType operation;
+    private ModifyTaskOperationType operation;
     
     @XmlElement(required=true)
     @XmlSchemaType(name="string")
-    private String userId;
+    private String requestingUserId;
    
-    // for delegate or forward (1 user) or nominate (multiple users)
-    @XmlElement(required=false)
-    @XmlSchemaType(name="string")
-    private List<String> targetUserOrGroupIds;
-    
     // For complete or fail
     @XmlElement(required=false)
     private StringObjectEntryList data;
