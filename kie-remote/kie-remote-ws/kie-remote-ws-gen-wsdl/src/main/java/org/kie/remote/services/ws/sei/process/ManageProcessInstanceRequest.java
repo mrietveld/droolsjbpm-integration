@@ -15,6 +15,8 @@
 
 package org.kie.remote.services.ws.sei.process;
 
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,8 +24,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.kie.remote.services.ws.sei.JaxbUnknownAdapter;
-import org.kie.remote.services.ws.sei.StringObjectEntryList;
+import org.kie.remote.jaxb.JaxbUnknownAdapter;
 
 /**
  * Only used for initial WSDL generation
@@ -59,8 +60,10 @@ public class ManageProcessInstanceRequest {
     private String processDefinitionId;
 
     @XmlElement
-    private StringObjectEntryList parameters;
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
+    private Map<String, Object> parameters;
    
+    @XmlElement
     @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     private Object event;
     

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei;
+package org.kie.remote.jaxb;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.kie.remote.services.ws.sei;
+package org.kie.remote.jaxb;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

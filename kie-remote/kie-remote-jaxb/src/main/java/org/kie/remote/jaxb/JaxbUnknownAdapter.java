@@ -1,4 +1,4 @@
-package org.kie.remote.services.ws.sei;
+package org.kie.remote.jaxb;
 
 /*
  * Copyright 2010 JBoss Inc
@@ -30,7 +30,7 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.kie.remote.services.ws.sei.CollectionWrapper.CollectionType;
+import org.kie.remote.jaxb.CollectionWrapper.CollectionType;
 
 public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
 
@@ -134,6 +134,16 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
             for( StringObjectEntry keyValue : soel.getEntries() ) { 
                 Object newVal = unmarshal(keyValue.getValue());
                 map.put(keyValue.getKey(), newVal);
+            }
+            return map;
+        } else if( o instanceof StringStringEntryList ) {
+            StringStringEntryList ssel = (StringStringEntryList) o;
+            if( ((StringStringEntryList) o).getEntries() == null ) { 
+                ((StringObjectEntryList) o).setEntries(Collections.EMPTY_LIST);
+            }
+            Map<String, String> map = new HashMap<String, String>();
+            for( StringStringEntry entry : ssel.getEntries() ) { 
+                map.put(entry.getKey(), entry.getValue());
             }
             return map;
         } else {

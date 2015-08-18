@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
-import org.kie.remote.services.ws.sei.StringObjectEntryList;
+import org.kie.remote.jaxb.StringObjectEntryList;
 
 /**
  * Only used for initial WSDL generation

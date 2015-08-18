@@ -41,10 +41,7 @@
         <configuration>
           <filesets>
             <fileset>
-              <directory>src/main/generated</directory>
-              <includes>
-                <include>**/*.java</include>
-              </includes>
+              <directory>src/main/generated/org</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
           </filesets>
@@ -108,11 +105,15 @@
         <configuration>
           <basedir>${project.build.directory}/classes/META-INF/wsdl</basedir>
           <includes>
+            <!-- 
             <include>DeploymentService.wsdl</include>
             <include>HistoryService.wsdl</include>
-            <include>ProcessService.wsdl</include>
+             -->
+            <include>ProcessInstanceService.wsdl</include>
             <include>TaskService.wsdl</include>
+            <!--
             <include>KnowledgeService.wsdl</include>
+              -->
           </includes>
           <regex>true</regex>
           <replacements>
@@ -123,12 +124,7 @@
           </replacements>
         </configuration>
       </plugin>
-                <!-- 
-                <wsdlFile>HistoryService.wsdl</wsdlFile>
-                <wsdlFile>ProcessService.wsdl</wsdlFile>
-                <wsdlFile>TaskService.wsdl</wsdlFile>
-                <wsdlFile>KnowledgeService.wsdl</wsdlFile>
-                -->
+                
       <plugin>
         <groupId>org.jvnet.jax-ws-commons</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
@@ -136,7 +132,7 @@
         <executions>
           <!-- 4. generate classes based on WSDL to be included in jar -->
           <execution>
-            <id>wsimport-from-jdk-deployment</id>
+            <id>wsimport-from-jdk-process-instance</id>
             <phase>process-resources</phase>
             <goals>
               <goal>wsimport</goal>
@@ -144,38 +140,18 @@
             <configuration>
               <executable>${tool.wsimport}</executable>
               <sourceDestDir>${basedir}//src/main/generated</sourceDestDir>
-              <packageName>org.kie.remote.services.ws.deployment.generated</packageName>
+              <packageName>org.kie.remote.services.ws.processinstance.generated</packageName>
               <target>2.1</target>
               <!-- Following configuration will invoke wsimport once for each wsdl. -->
               <wsdlLocation>file:///wsdl/*</wsdlLocation>
               <wsdlDirectory>${project.build.directory}/classes/META-INF/wsdl</wsdlDirectory>
               <wsdlFiles>
-                <wsdlFile>DeploymentService.wsdl</wsdlFile>
-              </wsdlFiles>
-            </configuration>
-          </execution>
-          <execution>
-            <id>wsimport-from-jdk-history</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>wsimport</goal>
-            </goals>
-            <configuration>
-              <executable>${tool.wsimport}</executable>
-              <sourceDestDir>${basedir}//src/main/generated</sourceDestDir>
-              <packageName>org.kie.remote.services.ws.history.generated</packageName>
-              <target>2.1</target>
-              <!-- Following configuration will invoke wsimport once for each wsdl. -->
-              <wsdlLocation>file:///wsdl/*</wsdlLocation>
-              <wsdlDirectory>${project.build.directory}/classes/META-INF/wsdl</wsdlDirectory>
-              <wsdlFiles>
-                <wsdlFile>HistoryService.wsdl</wsdlFile>
+                <wsdlFile>ProcessInstanceService.wsdl</wsdlFile>
               </wsdlFiles>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
     </plugins>
   </build>
 

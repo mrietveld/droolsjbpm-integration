@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" 
+    
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb" 
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:jaxws="http://java.sun.com/xml/ns/jaxws" 
+    
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsp="http://www.w3.org/ns/ws-policy"
+    xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" 
+    xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+    
+    xmlns:tns="http://services.remote.kie.org/VERSION/processInstance" 
+    name="ProcessInstanceService" 
+    targetNamespace="http://services.remote.kie.org/VERSION/processInstance">
+  <!-- JAX-WS Customizations: Wrapper styles, async. -->
+  <jaxws:bindings>
+    <jaxws:enableWrapperStyle>true</jaxws:enableWrapperStyle>
+    <jaxws:enableAsyncMapping>false</jaxws:enableAsyncMapping>
+  </jaxws:bindings>
+  <jxb:bindings version="1.0" 
+    xmlns="http://java.sun.com/xml/ns/jaxb"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+    xmlns:namespace="http://jaxb2-commons.dev.java.net/namespace-prefix">
+    <bindings node="//types//xs:schema//xs:complexType[@name='StringObjectEntry']//xs:sequence//xs:element[@name='value']">
+      <xjc:javaType xmlType="xs:anyType" adapter="org.kie.remote.jaxb.JaxbUnknownAdapter" />
+    </bindings>
+  </jxb:bindings>
+  <types xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:schema targetNamespace="http://services.remote.kie.org/VERSION/processInstance" 
+               version="1.0" 
+               jxb:version="1.0"
+               jxb:extensionBindingPrefixes="xjc">
+      <xs:annotation>
+        <xs:appinfo>
+          <jxb:globalBindings collectionType="java.util.LinkedList" fixedAttributeAsConstantProperty="true" generateIsSetMethod="false">
+            <xjc:serializable uid="1" />
+          </jxb:globalBindings>
+        </xs:appinfo>
+      </xs:annotation>
+
+      <!-- COMMON -->
+
+      <xs:complexType name="serializableServiceObject" abstract="true">
+        <xs:annotation>
+          <xs:appinfo>
+            <jxb:class ref="org.kie.remote.services.ws.common.SerializableServiceObject" />
+          </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence />
+      </xs:complexType>
+
+      <xs:complexType name="StringStringEntryList">
+        <xs:annotation>
+          <xs:appinfo>
+            <jxb:class ref="org.kie.remote.jaxb.StringStringEntryList" />
+          </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence />
+      </xs:complexType>
+
+      <xs:complexType name="StringObjectEntryList">
+        <xs:annotation>
+          <xs:appinfo>
+            <jxb:class ref="org.kie.remote.jaxb.StringObjectEntryList" />
+          </xs:appinfo>
+        </xs:annotation>
+        <xs:sequence />
+      </xs:complexType>
+
+      <!-- EXCEPTION -->
+
+      <xs:element name="ProcessInstanceServiceException" type="tns:WebServiceFaultInfo" />
+
+      <xs:complexType name="WebServiceFaultInfo">
+        <xs:annotation>
+          <xs:appinfo>
+            <jxb:class ref="org.kie.remote.services.ws.common.WebServiceFaultInfo" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:complexType>
+
+      <!-- OPERATIONS -->
+
+      <xs:simpleType name="processInstanceState">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="PENDING" />
+          <xs:enumeration value="ACTIVE" />
+          <xs:enumeration value="COMPLETED" />
+          <xs:enumeration value="ABORTED" />
+          <xs:enumeration value="SUSPENDED" />
+        </xs:restriction>
+      </xs:simpleType>
+
+      <xs:complexType name="CorrelationKey">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0" />
+          <xs:element name="properties" type="tns:StringStringEntryList" />
+        </xs:sequence>
+      </xs:complexType>
+
+      <!-- manage process -->
+
+      <xs:element name="manageProcessInstance" type="tns:manageProcessInstance" />
+
+      <xs:complexType name="manageProcessInstance">
+        <xs:sequence>
+          <xs:element name="request" type="tns:ManageProcessInstanceRequest" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:complexType name="ManageProcessInstanceRequest">
+        <xs:sequence>
+          <xs:element name="deploymentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="operation" type="tns:processInstanceOperationType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="processInstanceId" type="xs:long" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="correlationKey" type="tns:CorrelationKey" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="processDefinitionId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="parameters" type="tns:StringObjectEntryList" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="eventType" type="xs:string" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="event" type="xs:anyType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:simpleType name="processInstanceOperationType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="START" />
+          <xs:enumeration value="ABORT" />
+          <xs:enumeration value="SIGNAL" />
+          <xs:enumeration value="GET" />
+        </xs:restriction>
+      </xs:simpleType>
+
+      <xs:element name="manageProcessInstanceResponse" type="tns:manageProcessInstanceResponse" />
+
+      <xs:complexType name="manageProcessInstanceResponse">
+        <xs:sequence>
+          <xs:element name="return" type="tns:ProcessInstanceResponse" minOccurs="1" />
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:complexType name="ProcessInstanceResponse">
+        <xs:sequence>
+          <xs:element name="processInstanceId" type="xs:long" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="correlationKey" type="tns:CorrelationKey" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="processId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="state" type="tns:processInstanceState" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="eventTypes" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+      </xs:complexType>
+
+      <!-- manage process instance variables -->
+
+      <xs:element name="manageProcessInstanceVariables" type="tns:manageProcessInstanceVariables" />
+
+      <xs:complexType name="manageProcessInstanceVariables">
+        <xs:sequence>
+          <xs:element name="request" type="tns:ProcessInstanceVariableMessage" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:complexType name="ProcessInstanceVariableMessage">
+        <xs:sequence>
+          <xs:element name="processInstanceId" type="xs:long" minOccurs="0" maxOccurs="1" />
+          <xs:element name="correlationKey" type="tns:CorrelationKey" minOccurs="0" maxOccurs="1" />
+          <xs:element name="get" type="xs:boolean" maxOccurs="1" />
+          <xs:element name="variables" type="tns:StringObjectEntryList" minOccurs="0" maxOccurs="1"/>
+          <xs:element name="variableIds" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:element name="manageProcessInstanceVariablesResponse" type="tns:manageProcessInstanceVariablesResponse" />
+
+      <xs:complexType name="manageProcessInstanceVariablesResponse">
+        <xs:sequence>
+          <xs:element name="return" type="tns:ProcessInstanceVariableMessage" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </xs:complexType>
+
+      <!-- manage work item -->
+
+      <xs:element name="manageWorkItem" type="tns:manageWorkItem" />
+
+      <xs:complexType name="manageWorkItem">
+        <xs:sequence>
+          <xs:element name="request" type="tns:ManageWorkItemRequest" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:complexType name="ManageWorkItemRequest">
+        <xs:sequence>
+          <xs:element name="deploymentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="operation" type="tns:workItemOperationType" minOccurs="1" maxOccurs="1" />
+          <xs:element name="workItemId" type="xs:long" minOccurs="1" maxOccurs="1" />
+          <xs:element name="results" type="tns:StringObjectEntryList" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:complexType>
+
+      <xs:simpleType name="workItemOperationType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ABORT" />
+          <xs:enumeration value="COMPLETE" />
+        </xs:restriction>
+      </xs:simpleType>
+
+      <xs:element name="manageWorkItemResponse" type="tns:manageWorkItemResponse" />
+
+      <xs:complexType name="manageWorkItemResponse">
+        <xs:sequence />
+      </xs:complexType>
+    </xs:schema>
+  </types>
+
+  <message name="manageProcessInstance">
+    <part name="parameters" element="tns:manageProcessInstance" />
+  </message>
+  <message name="manageProcessInstanceResponse">
+    <part name="parameters" element="tns:manageProcessInstanceResponse" />
+  </message>
+  <message name="manageWorkItem">
+    <part name="parameters" element="tns:manageWorkItem" />
+  </message>
+  <message name="manageWorkItemResponse">
+    <part name="parameters" element="tns:manageWorkItemResponse" />
+  </message>
+  <message name="manageProcessInstanceVariables">
+    <part name="parameters" element="tns:manageProcessInstanceVariables" />
+  </message>
+  <message name="manageProcessInstanceVariablesResponse">
+    <part name="parameters" element="tns:manageProcessInstanceVariablesResponse" />
+  </message>
+  <message name="ProcessInstanceServiceException">
+    <part name="fault" element="tns:ProcessInstanceServiceException" />
+  </message>
+
+  <portType name="ProcessInstanceServicePortType">
+    <operation name="manageProcessInstance">
+      <input wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageProcessInstanceRequest"
+        message="tns:manageProcessInstance" />
+      <output wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageProcessInstanceResponse"
+        message="tns:manageProcessInstanceResponse" />
+      <fault message="tns:ProcessInstanceServiceException" name="ProcessInstanceServiceException"
+        wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageProcessInstance/Fault/ProcessInstanceServiceException">
+        <jaxws:bindings>
+          <jaxws:class name="ProcessInstanceWebServiceException" />
+        </jaxws:bindings>
+      </fault>
+    </operation>
+
+    <operation name="manageWorkItem">
+      <input wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageWorkItemRequest"
+        message="tns:manageWorkItem" />
+      <output wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageWorkItemResponse"
+        message="tns:manageWorkItemResponse" />
+      <fault message="tns:ProcessInstanceServiceException" name="ProcessInstanceServiceException"
+        wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageProcessInstance/Fault/ProcessInstanceServiceException">
+        <jaxws:bindings>
+          <jaxws:class name="ProcessInstanceWebServiceException" />
+        </jaxws:bindings>
+      </fault>
+    </operation>
+
+    <operation name="manageProcessInstanceVariables">
+      <input wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageProcessInstanceVariablesRequest"
+        message="tns:manageProcessInstanceVariables" />
+      <output wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageProcessInstanceVariablesResponse"
+        message="tns:manageProcessInstanceVariablesResponse" />
+      <fault message="tns:ProcessInstanceServiceException" name="ProcessInstanceServiceException"
+        wsam:Action="http://services.remote.kie.org/VERSION/processInstance/ProcessInstanceService/manageProcessInstance/Fault/ProcessInstanceServiceException">
+        <jaxws:bindings>
+          <jaxws:class name="ProcessInstanceWebServiceException" />
+        </jaxws:bindings>
+      </fault>
+    </operation>
+  </portType>
+
+  <binding name="ProcessInstanceServicePortBinding" type="tns:ProcessInstanceServicePortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <operation name="manageProcessInstance">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="ProcessInstanceServiceException">
+        <soap:fault name="ProcessInstanceServiceException" use="literal" />
+      </fault>
+    </operation>
+    <operation name="manageWorkItem">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="ProcessInstanceServiceException">
+        <soap:fault name="ProcessInstanceServiceException" use="literal" />
+      </fault>
+    </operation>
+    <operation name="manageProcessInstanceVariables">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="ProcessInstanceServiceException">
+        <soap:fault name="ProcessInstanceServiceException" use="literal" />
+      </fault>
+    </operation>
+  </binding>
+
+  <service name="ProcessInstanceService">
+    <jaxws:bindings>
+      <jaxws:class name="ProcessInstanceServiceClient" />
+    </jaxws:bindings>
+    <port name="ProcessInstanceServicePort" binding="tns:ProcessInstanceServicePortBinding">
+      <soap:address location="REPLACE_WITH_ACTUAL_URL" />
+    </port>
+  </service>
+
+</definitions>
+

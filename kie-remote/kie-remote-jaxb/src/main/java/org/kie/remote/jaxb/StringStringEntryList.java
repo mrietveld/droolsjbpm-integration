@@ -13,43 +13,33 @@
  * limitations under the License.
 */
 
-package org.kie.remote.services.ws.sei.process;
+package org.kie.remote.jaxb;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-
-import org.kie.remote.jaxb.StringObjectEntryList;
 
 /**
  * Only used for initial WSDL generation
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProcessInstanceResponse", propOrder = {
-    "id",
-    "processId",
-    "state",
-    "eventTypes"
-})
-public class ProcessInstanceResponse {
-    
-    @XmlElement(required=true)
-    @XmlSchemaType(name="long")
-    private Long id;
+@XmlType(name = "StringStringEntryList", propOrder = {
+        "entries"
+    })
+public class StringStringEntryList {
 
-    @XmlElement(required=true)
-    @XmlSchemaType(name="string")
-    private String processId;
+    @XmlElement(name = "entry", nillable = true)
+    private List<StringStringEntry> entries;
 
-    @XmlElement(required=true)
-    private ProcessInstanceState state;
+    public List<StringStringEntry> getEntries() {
+        return entries;
+    }
 
-    @XmlElement
-    private List<String> eventTypes = new ArrayList<String>();
+    public void setEntries( List<StringStringEntry> entries ) {
+        this.entries = entries;
+    }
     
 }
