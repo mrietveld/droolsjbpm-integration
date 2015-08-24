@@ -20,6 +20,7 @@ import static org.kie.internal.remote.PermissionConstants.REST_PROCESS_RO_ROLE;
 import static org.kie.internal.remote.PermissionConstants.REST_ROLE;
 import static org.kie.remote.common.rest.RestEasy960Util.*;
 
+import static org.kie.internal.remote.PermissionConstants.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
