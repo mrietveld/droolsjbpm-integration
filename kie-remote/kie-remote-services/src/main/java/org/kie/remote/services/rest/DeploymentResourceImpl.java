@@ -15,9 +15,7 @@
 
 package org.kie.remote.services.rest;
 
-import static org.kie.internal.remote.PermissionConstants.REST_DEPLOYMENT_ROLE;
-import static org.kie.internal.remote.PermissionConstants.REST_ROLE;
-
+import static org.kie.internal.remote.PermissionConstants.*;
 import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
