@@ -1,8 +1,8 @@
 package org.kie.remote.services.rest.query;
 
 import static org.jbpm.query.jpa.data.QueryParameterIdentifiersUtil.getQueryParameterIdNameMap;
-import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.createJoinedAuditPredicateFromSingleCriteria;
-import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.createJoinedTaskPredicateFromSingleCriteria;
+import static org.jbpm.services.task.persistence.TaskSummaryQueryCriteriaUtil.taskImplSpecificGetEntityField;
+import static org.jbpm.services.task.persistence.TaskSummaryQueryCriteriaUtil.taskSpecificCreatePredicateFromSingleCriteria;
 import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.getJoinRootClassAndAddNeededJoin;
 import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.sharedCreateQueryAndCallApplyMetaCriteriaAndGetResult;
 import static org.kie.remote.services.rest.query.RemoteServicesQueryData.checkAndInitializeCriteriaAttributes;

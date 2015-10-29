@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.jbpm.services.task.commands.TaskCommand;
 import org.kie.api.command.Command;
+import org.kie.internal.PropertyNames;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.remote.services.AcceptedServerCommands;
 import org.kie.remote.services.cdi.ProcessRequestBean;
@@ -22,7 +23,7 @@ public class ExecuteCommandUtil {
         // util class
     }
 
-    private static Boolean allowAllUsersAccessToAllTasks = Boolean.getBoolean("org.kie.task.insecure");
+    private static Boolean allowAllUsersAccessToAllTasks = Boolean.getBoolean(PropertyNames.INSECURE_TASK_ACCESS_PROPERTY);
 
     public static JaxbCommandsResponse restProcessJaxbCommandsRequest(JaxbCommandsRequest request,
             IdentityProvider identityProvider, ProcessRequestBean processRequestBean) {

@@ -5,6 +5,9 @@ import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.crea
 import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.createJoinedTaskPredicateFromSingleCriteria;
 import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.getJoinRootClassAndAddNeededJoin;
 import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.sharedCreateQueryAndCallApplyMetaCriteriaAndGetResult;
+import static org.jbpm.services.task.persistence.TaskSummaryQueryCriteriaUtil.taskImplSpecificGetEntityField;
+import static org.jbpm.services.task.persistence.TaskSummaryQueryCriteriaUtil.taskSpecificCreatePredicateFromSingleCriteria;
+import static org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.*;
 import static org.kie.remote.services.rest.query.RemoteServicesQueryData.checkAndInitializeCriteriaAttributes;
 
 import java.util.List;
@@ -21,7 +24,13 @@ import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.query.jpa.data.QueryCriteria;
 import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.services.task.impl.model.TaskImpl;
+<<<<<<< HEAD
 import org.jbpm.services.task.persistence.TaskSummaryQueryCriteriaUtil;
+=======
+import org.jbpm.services.task.impl.model.TaskImpl_;
+import org.jbpm.services.task.persistence.TaskSummaryQueryCriteriaUtil;
+import org.kie.remote.services.rest.query.RemoteServicesCriteriaUtil.TASK_SPECIFIC_CRITERIA;
+>>>>>>> ongoing
 
 public class RemoteServicesTaskQueryCriteriaUtil extends TaskSummaryQueryCriteriaUtil {
 
