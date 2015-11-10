@@ -33,11 +33,15 @@ import javax.xml.ws.Endpoint;
 import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.ws.security.SecurityConstants;
+import org.drools.core.command.runtime.process.StartProcessCommand;
+import org.drools.core.xml.jaxb.util.JaxbStringObjectPair;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.remote.client.api.RemoteRuntimeEngineFactory;
 import org.kie.remote.client.jaxb.JaxbCommandsRequest;
 import org.kie.remote.client.jaxb.JaxbCommandsResponse;
+import org.kie.remote.jaxb.gen.JaxbStringObjectPairArray;
 import org.kie.remote.services.ws.command.generated.CommandServiceBasicAuthClient;
 import org.kie.remote.services.ws.command.generated.CommandWebService;
 import org.kie.remote.services.ws.command.test.TestCommandBasicAuthImpl;
@@ -50,6 +54,7 @@ public class CommandServiceTest {
     protected static URL[] wsdlURL = new URL[2];
     protected static QName[] serviceName = new QName[2];
     protected static QName[] portName = new QName[2];
+    protected static String serverAdress;
 
     private final static Random random = new Random();
     private final static AtomicLong idGen = new AtomicLong(random.nextInt(10000));
@@ -74,8 +79,9 @@ public class CommandServiceTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        {
         int port = AvailablePortFinder.getNextAvailable(1025);
-        String serverAdress = "http://localhost:" + port;
+        serverAdress = "http://localhost:" + port;
         String address = serverAdress + "/ws/CommandService";
         URL url = CommandServiceTest.class.getResource("/wsdl/CommandService.wsdl");
         assertNotNull("Null URL for wsdl resource", url);
@@ -89,6 +95,7 @@ public class CommandServiceTest {
         CommandWebService webServiceImpl = new TestCommandBasicAuthImpl();
         eps[0] = setupCommandServiceEndpoint(address, webServiceImpl);
         wsdlURL[0] = new URL(address + "?wsdl");
+        }
     }
 
     @AfterClass
@@ -110,8 +117,18 @@ public class CommandServiceTest {
     }
 
     private JaxbCommandsRequest createRequest() {
+        org.kie.remote.jaxb.gen.StartProcessCommand spCmd = new org.kie.remote.jaxb.gen.StartProcessCommand();
+        Float [] obj = new Float[] { 10.3f, 5.6f };
+        JaxbStringObjectPairArray params = new JaxbStringObjectPairArray();
+        String paramName = "myobject";
+        org.kie.remote.jaxb.gen.util.JaxbStringObjectPair pair = new org.kie.remote.jaxb.gen.util.JaxbStringObjectPair();
+        pair.setKey(paramName); pair.setValue(obj);
+        params.getItems().add(pair);
+        spCmd.setParameter(params);
+
         String depId = UUID.randomUUID().toString();
         JaxbCommandsRequest req = new JaxbCommandsRequest();
+        req.getCommands().add(spCmd);
         req.setDeploymentId(depId);
         req.setVersion(ServicesVersion.VERSION);
         req.setUser("test");
@@ -145,15 +162,29 @@ public class CommandServiceTest {
         pws = psc.getCommandServiceBasicAuthPort();
         bindingProxy = (BindingProvider) pws;
 
-        /**
-         * do request without auth
-         * try {
-         * resp = pws.execute(req);
-         * fail("The WS call should have failed without authentication");
-         * } catch( SOAPFaultException soapfe ) {
-         * assertTrue( soapfe.getMessage().contains("No username") );
-         * }
-         **/
+        /** do request without auth
+        try {
+            resp = pws.execute(req);
+            fail("The WS call should have failed without authentication");
+        } catch( SOAPFaultException soapfe ) {
+            assertTrue( soapfe.getMessage().contains("No username") );
+        }
+        **/
+
+        CommandWebService webServiceClient =
+                RemoteRuntimeEngineFactory.newCommandWebServiceClientBuilder()
+                    .addDeploymentId("org.test:kjar:1.0")
+                    .addServerUrl(serverAdress)
+                    .addUserName("test").addPassword("test")
+                    .buildBasicAuthClient();
+
+        // request
+        req = createRequest();
+        resp = webServiceClient.execute(req);
+
+        // test response
+        assertNotNull("Null response", resp);
+        assertEquals("Deployment id", req.getDeploymentId(), resp.getDeploymentId());
     }
 
 }

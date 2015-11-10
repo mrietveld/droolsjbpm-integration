@@ -65,6 +65,7 @@ class RemoteCommandWebserviceClientBuilderImpl extends RemoteWebserviceClientBui
     @Override
     public CommandWebService buildBasicAuthClient() {
         checkAndFinalizeConfig();
+
         String wsdlLocationRelativePath = config.getWsdlLocationRelativePath();
 
         URL wsdlUrl;
