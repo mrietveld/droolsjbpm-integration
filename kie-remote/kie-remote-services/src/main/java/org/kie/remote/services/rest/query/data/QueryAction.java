@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -25,11 +25,11 @@ package org.kie.remote.services.rest.query.data;
  * </ol>
  * Some query parameters, such as certain field values (process instance id, potential owner, etc)
  * can be passed multiple times:
- * 
+ *
  * <pre>
  * http://.../../rest/query/runtime/process?processinstanceid=2&processinstanceid=3
  * </pre>
- * 
+ *
  * When we process these query parameters on the server side, the JAX-RS logic groups all of the values
  * for one parameter into a list or array.
  * </p>
@@ -44,22 +44,26 @@ public class QueryAction {
     public boolean regex = false;
     public boolean min = false;
     public boolean max = false;
+    public int logical = 0;
+
+    public final static int AND = 1;
+    public final static int OR = 1;
 
     public QueryAction(String param, int action, String[] data) {
         this.paramName = param;
         this.action = action;
         this.paramData = data;
     }
-    
+
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder("[" + action + "] " + paramName + ": (");
-        if( paramData.length > 0 ) { 
+        if( paramData.length > 0 ) {
             out.append(paramData[0]);
-            for( int i = 1; i < paramData.length; ++i ) { 
+            for( int i = 1; i < paramData.length; ++i ) {
                 out.append(", ").append(paramData[i]);
             }
-        } 
+        }
         return out.append(")").toString();
     }
 }

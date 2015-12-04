@@ -215,13 +215,20 @@ abstract class AbstractInternalQueryHelper<R> extends InternalQueryBuilderMethod
             if( ResourceBase.paginationParams.contains(orig_param) ) {
                 continue;
             }
+            boolean disjunctionCriteria = orig_param.startsWith("or_") || orig_param.startsWith("and_");
+            int index = disjunctionCriteria ? 1 : 0;
             String[] paramParts = orig_param.split("_");
-            String param = paramParts[0];
-            if( paramParts.length >= 2 ) {
+            String param = paramParts[index];
 
-                if( varInstQueryParams[2].equals(paramParts[0])
-                    || varInstQueryParams[3].equals(paramParts[0])
-                    || varInstQueryParamsShort[3].equals(paramParts[0]) ) {
+            Integer action = paramNameActionMap.get(param);
+            if( action == null ) {
+                throw KieRemoteRestOperationException.badRequest("Query parameter '" + orig_param + "' is not supported.");
+            }
+
+            if( paramParts.length >= 2 ) {
+                if( varInstQueryParams[2].equals(param)
+                    || varInstQueryParams[3].equals(param)
+                    || varInstQueryParamsShort[3].equals(param) ) {
                     // check that variable parameter has only been submitted once as query parameter
                     String[] values = queryParams.get(orig_param);
                     if( values.length > 1 ) {
@@ -231,56 +238,50 @@ abstract class AbstractInternalQueryHelper<R> extends InternalQueryBuilderMethod
 
                     // The variable may contain a "_": compensate for that by readding the rest of the split parts
                     String varName = null;
-                    StringBuilder nameBuilder = new StringBuilder(paramParts[1]);
-                    for( int i = 2; i < paramParts.length; ++i ) {
+                    StringBuilder nameBuilder = new StringBuilder(paramParts[index+1]);
+                    for( int i = index+2; i < paramParts.length; ++i ) {
                         nameBuilder.append("_").append(paramParts[i]);
                     }
                     varName = nameBuilder.toString();
 
                     // add action data to queue
-                    Integer queryActionInt = paramNameActionMap.get(paramParts[0]);
                     String [] data = { varName };
-                    QueryAction queryAction = new QueryAction(orig_param, queryActionInt, data);
+                    QueryAction queryAction = new QueryAction(orig_param, action, data);
                     queryActionQueue.add(queryAction);
 
                     // IF:
                     // - the query parameter starts with 'var', then it's an 'equals' operation ("var_partid=23a")
                     // - the query parameter starts with 'varregex' or 'vr', then it's an regex operation ( "vr_partid=23*" )
-                    if( varInstQueryParams[2].equals(paramParts[0]) ) {
+                    if( varInstQueryParams[2].equals(param) ) {
                         varValueMap.put(varName, value);
                     } else {
                         varRegexMap.put(varName, value);
                         queryAction.regex = true;
                     }
+
                     continue;
                 }
 
-                if( paramParts.length > 2 ) {
+                if( paramParts.length > (disjunctionCriteria ? 3 : 2) ) {
                     throw KieRemoteRestOperationException.badRequest("Query parameter '" + orig_param + "' is not supported.");
                 }
 
-                Integer action = paramNameActionMap.get(paramParts[0]);
-                if( action == null ) {
-                    throw KieRemoteRestOperationException.badRequest("Query parameter '" + orig_param + "' is not supported.");
-                }
                 QueryAction queryAction = new QueryAction(orig_param, action, entry.getValue());
                 queryActionQueue.add(queryAction);
-                if( "min".equals(paramParts[1]) ) {
+                if( "min".equals(paramParts[index+1]) ) {
                     queryAction.min = true;
-                } else if( "max".equals(paramParts[1]) ) {
+                } else if( "max".equals(paramParts[index+1]) ) {
                     queryAction.max = true;
-                } else if( "re".equals(paramParts[1]) ) {
+                } else if( "re".equals(paramParts[index+1]) ) {
                     queryAction.regex = true;
                 } else {
                     throw KieRemoteRestOperationException.badRequest("Query parameter '" + orig_param + "' is not supported.");
                 }
-            } else {
-                Integer action = paramNameActionMap.get(param);
-                if( action != null ) {
-                    queryActionQueue.add(new QueryAction(orig_param, action, entry.getValue()));
-                } else {
-                    throw KieRemoteRestOperationException.badRequest("Query parameter '" + orig_param + "' is not supported.");
+                if( disjunctionCriteria ) {
+                    queryAction.logical = true;
                 }
+            } else {
+                queryActionQueue.add(new QueryAction(orig_param, action, entry.getValue()));
             }
         }
 
@@ -371,6 +372,8 @@ abstract class AbstractInternalQueryHelper<R> extends InternalQueryBuilderMethod
             QueryAction queryAction = queryActionQueue.poll();
             String[] data = queryAction.paramData;
             int action = queryAction.action;
+            boolean processedSeparately = false;
+
             switch ( action ) {
             // general
             case 0: // processinstanceid
@@ -537,15 +540,17 @@ abstract class AbstractInternalQueryHelper<R> extends InternalQueryBuilderMethod
                 break;
             case 16: // var
                 varValueQueryActions.add(queryAction);
+                processedSeparately = true;
                 break;
             case 17: // varregex
                 varValueQueryActions.add(queryAction);
+                processedSeparately = true;
                 break;
 
             default:
                 throw KieRemoteRestOperationException.internalServerError("Please contact the developers: state [" + action + "] should not be possible.");
             }
-            if( (queryAction.min || queryAction.max || queryAction.regex) && action < 16 ) {
+            if( (queryAction.min || queryAction.max || queryAction.regex) && ! processedSeparately ) {
                 throw KieRemoteRestOperationException.notFound("Query parameter '" + queryAction.paramName + "' is not supported.");
             }
         }

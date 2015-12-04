@@ -196,6 +196,9 @@ public class QueryResourceImpl extends ResourceBase {
             if( paginationParams.contains(queryParam) ) {
                 continue;
             }
+            if( checkSpecial && queryParam.startsWith("or_") ) {
+                queryParam = queryParam.substring("or_".length());
+            }
             if( allowedParams.contains(queryParam) ) {
                 continue;
             }

@@ -179,6 +179,11 @@ public class QueryResourceQueryParametersTest {
             checkIfParametersAreAllowed(queryParams, allowedParams, true, "test");
         }
 
+        for( String param : allParams ) {
+            queryParams.clear();
+            addParam(queryParams, "or_" + param, "value");
+            checkIfParametersAreAllowed(queryParams, allowedParams, true, "test");
+        }
     }
 
     @Test
