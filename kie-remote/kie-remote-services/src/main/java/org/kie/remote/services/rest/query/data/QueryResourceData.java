@@ -15,6 +15,7 @@
 
 package org.kie.remote.services.rest.query.data;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -221,19 +222,19 @@ public class QueryResourceData {
         }
         return result;
     }
-  
-    public static final SimpleDateFormat QUERY_PARAM_DATE_FORMAT 
-        = new SimpleDateFormat("yy-MM-dd_HH:mm:ss");
-    
-    public static Date [] getDates(int action, String [] data) { 
-        Date [] result = new Date[data.length];
-        for( int i = 0; i < data.length; ++i) { 
+
+    public static final SimpleDateFormat QUERY_PARAM_DATE_FORMAT
+        = new SimpleDateFormat("yy-MM-dd_HH:mm:ss.SSS");
+
+    public static Timestamp [] getDates(int action, String [] data) {
+        Timestamp [] result = new Timestamp[data.length];
+        for( int i = 0; i < data.length; ++i) {
             result[i] = parseDate(data[i]);
         }
         return result;
     }
-   
-    private static Date parseDate(String dateStr) { 
+
+    private static Timestamp parseDate(String dateStr) {
         String [] parts = dateStr.split("_");
         String [] dateParts = null;
         String [] timeParts = null;
@@ -262,7 +263,11 @@ public class QueryResourceData {
         } else { 
             badDateString(dateStr);
         }
-        if( parseDateStr == null ) { 
+        // backwards compatibility for when it was just "yy-MM-dd_HH:mm:ss"
+        if( ! timeParts[2].contains(".") ) {
+           timeParts[2] = timeParts[2] + ".000";
+        }
+        if( parseDateStr == null ) {
             StringBuilder tmpStr = new StringBuilder(dateParts[0]);
             for( int i = 1; i < 3; ++i ) { 
                tmpStr.append("-").append(dateParts[i]);
@@ -274,8 +279,10 @@ public class QueryResourceData {
             }
             parseDateStr = tmpStr.toString();
         }
+
         try {
-            return QUERY_PARAM_DATE_FORMAT.parse(parseDateStr);
+            Date date = QUERY_PARAM_DATE_FORMAT.parse(parseDateStr);
+            return new Timestamp(date.getTime());
         } catch( ParseException pe ) {
             badDateString(parseDateStr);
             // this should never be thrown
