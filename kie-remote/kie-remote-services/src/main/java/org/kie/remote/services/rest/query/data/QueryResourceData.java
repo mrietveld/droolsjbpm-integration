@@ -340,8 +340,12 @@ public class QueryResourceData {
     }
 
     public static boolean isNameValueParam(String queryParam) {
+        queryParam = queryParam.toLowerCase();
         for( String allowedParam : nameValueParams ) {
-            if( queryParam.toLowerCase().startsWith(allowedParam + "_")) {
+            if( queryParam.startsWith(allowedParam + "_") ) {
+                return true;
+            }
+            if( queryParam.startsWith("and_" + allowedParam + "_") ) {
                 return true;
             }
         }

@@ -561,6 +561,29 @@ public class QueryResourceTest extends AbstractQueryResourceTest {
         assertFalse( "Null result ('COMPLETE' + var1 OR var2)", result == null || result.getProcessInstanceInfoList() == null );
         assertFalse( "Empty result ('COMPLETE' + var1 OR var2)", result.getProcessInstanceInfoList().isEmpty() );
         assertEquals( "Num results ('COMPLETE' + var1 OR var2)", origNumResults, result.getProcessInstanceInfoList().size() );
+
+        // test AND functionality (listing and_var_ parameters A and B gets results that reference var A AND var B)
+        queryParams.clear();
+        addParams(queryParams, "and_varregex_inputStr", "*check*");
+        addParams(queryParams, "and_vr_secondStr", "*-second-*");
+        addParams(queryParams, "processinstancestatus", "" + ProcessInstance.STATE_COMPLETED );
+
+        result = queryProcInstHelper.queryTasksOrProcInstsAndVariables(queryParams, pageInfo);
+        assertFalse( "Null result ('COMPLETE' + var1 OR var2)", result == null || result.getProcessInstanceInfoList() == null );
+        assertFalse( "Empty result ('COMPLETE' + var1 OR var2)", result.getProcessInstanceInfoList().isEmpty() );
+        assertEquals( "Num results ('COMPLETE' + var1 OR var2)", origNumResults, result.getProcessInstanceInfoList().size() );
+
+        // test AND functionality (listing 1 and_var_ and 2 var_ parameter (A, B, C) gets results that reference (A AND (B OR C))
+        queryParams.clear();
+        addParams(queryParams, "and_vr_secondStr", "*-second-*");
+        addParams(queryParams, "varregex_inputStr", "*check*");
+        addParams(queryParams, "var_inputStr", "check-1");
+        addParams(queryParams, "processinstancestatus", "" + ProcessInstance.STATE_COMPLETED );
+
+        result = queryProcInstHelper.queryTasksOrProcInstsAndVariables(queryParams, pageInfo);
+        assertFalse( "Null result ('COMPLETE' + var1 OR var2)", result == null || result.getProcessInstanceInfoList() == null );
+        assertFalse( "Empty result ('COMPLETE' + var1 OR var2)", result.getProcessInstanceInfoList().isEmpty() );
+        assertEquals( "Num results ('COMPLETE' + var1 OR var2)", origNumResults, result.getProcessInstanceInfoList().size() );
     }
 
 }
